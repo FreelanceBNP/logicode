@@ -1,0 +1,273 @@
+﻿@model BeginningData
+@{
+	ViewData["Title"] = "Add / Edit FormLoan";
+	string _ex = (Model.id == null ? "1" : "0");
+	var itemTubeData = ViewBag.ItemTubeData as List<ItemTubeData>;
+	var templateData = ViewBag.TemplateData as List<TemplateData>;
+}
+@section HeaderTitle {
+	@ViewData["Title"]
+}
+
+<div class="card card-bordered">
+	<div class="card-body">
+		<form id="myForm" class="form" asp-action="FormLoan" asp-controller="Transaction">
+			<!--begin::Scroll-->
+			<input type="hidden" asp-for="id_encrypt" />
+			<input type="hidden" asp-for="itemtube_id" />
+			<input type="hidden" asp-for="template_id" />
+			<input type="hidden" asp-for="doc_status" />
+			<div class="row gx-10 mb-5">
+				<div class=" col-lg-10">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Item</label>
+					<div class="mb-5 fv-row">
+						<select class="form-select " data-control="select2" data-placeholder="Select Item Tube"
+							id="ddlItemTube" name="ddlItemTube" onchange="goChangeItemTube(this);">
+							<option value=""></option>
+							@foreach (var item in itemTubeData)
+							{
+								if (item.id == Model.itemtube_id)
+								{
+									<option value="@item.id" selected>@item.itemtube_code : @item.itemtube_description</option>
+								}
+								else
+								{
+									<option value="@item.id">@item.itemtube_code : @item.itemtube_description</option>
+								}
+							}
+						</select>
+					</div>
+				</div>
+
+				<div class=" col-lg-1">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Active </label>
+					<!--begin::Input group-->
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" asp-for="is_active" />
+					</div>
+					<!--end::Input group-->
+				</div>
+
+				<div class=" col-lg-1">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Status </label>
+					<span class="badge badge-light-primary  badge-lg">@Model.doc_status</span>
+				</div>
+			</div>
+
+				<div class="row gx-10">
+					<div class=" col-lg-6">
+						<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Frist name </label>
+						<div class="mb-5 fv-row">
+							<input type="text" class="form-control" asp-for="tran_code">
+						</div>
+					</div>
+					<div class=" col-lg-6">
+						<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Last name </label>
+						<div class="mb-5 fv-row">
+							<input type="text" class="form-control" asp-for="tran_code">
+						</div>
+					</div>
+				</div>
+				<div class="row gx-10">
+					<div class=" col-lg-6">
+						@* <label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Start date </label>
+						<div class="mb-5 fv-row">
+							<input type="text" class="form-control" asp-for="tran_code">
+						</div> *@
+						<label for="" class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Start date</label>
+    					<input class="form-control form-control-solid" placeholder="Pick start date" id="start_date"/>
+					</div>
+					<div class=" col-lg-6">
+						@* <label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">End date </label>
+						<div class="mb-5 fv-row">
+							<input type="text" class="form-control" asp-for="tran_code">
+						</div> *@
+						<label for="" class="form-label fs-6 fw-bold text-gray-700 mb-3 required">End date</label>
+    					<input class="form-control form-control-solid" placeholder="Pick end date" id="end_date"/>
+					</div>
+				</div>
+				<div class="row gx-10">
+					<div class=" col-lg-12">
+						<label class="form-label fs-6 fw-bold text-gray-700 mb-3 ">Remark </label>
+						<!--begin::Input group-->
+						<div class="mb-5 fv-row">
+							<textarea asp-for="remark" rows="2" class="form-control"></textarea>
+						</div>
+						<!--end::Input group-->
+					</div>
+				</div>
+
+
+			<!--begin::Actions-->
+			<div class="text-center pt-10">
+				<button type="submit" id="kt_submit" class="btn btn-primary">
+					<!--begin::Indicator label-->
+					<span class="indicator-label">Save</span>
+					<!--end::Indicator label-->
+					<!--begin::Indicator progress-->
+					<span class="indicator-progress">
+						Please wait...
+						<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+					</span>
+					<!--end::Indicator progress-->
+				</button>
+				<a asp-action="Beginning" asp-controller="Transaction" class="btn btn-danger mx-3">Cancel</a>
+			</div>
+			<!--end::Actions-->
+		</form>
+	</div>
+
+</div>
+@section Scripts {
+	<script>
+		// Define form element
+
+
+		$(function () {
+			//debugger
+		$("#start_date").flatpickr({
+			enableTime: true,
+			dateFormat: "d-m-Y",
+		});
+		$("#end_date").flatpickr({
+			enableTime: true,
+			dateFormat: "d-m-Y",
+		});
+			if ('@_ex' == '1') {
+				$("#tran_code").prop("disabled", false);
+
+			} else {
+				$("#tran_code").prop("disabled", true);
+				goChangeTemplate();
+			}
+			const form = document.getElementById('myForm');
+			var validator = FormValidation.formValidation(
+				form,
+				{
+					fields: {
+						'tran_code': {
+							validators: {
+								notEmpty: {
+									message: '** required'
+								}
+							}
+						},
+						'ddlItemTube': {
+							validators: {
+								notEmpty: {
+									message: '** required'
+								}
+							}
+						},
+						'ddlTemplate': {
+							validators: {
+								notEmpty: {
+									message: '** required'
+								}
+							}
+						}
+					},
+					plugins: {
+						trigger: new FormValidation.plugins.Trigger(),
+						bootstrap: new FormValidation.plugins.Bootstrap5({
+							rowSelector: '.fv-row',
+							eleInvalidClass: '',
+							eleValidClass: ''
+						})
+					}
+				}
+			);
+
+			// Submit button handler
+			const submitButton = document.getElementById('kt_submit');
+			submitButton.addEventListener('click', function (e) {
+				// Prevent default button action
+				e.preventDefault();
+
+				$("#doc_status").val('@Model.doc_status');
+
+				// Validate form before submit
+				if (validator) {
+					validator.validate().then(function (status) {
+						@* console.log('validated!'); *@
+
+						if (status == 'Valid') {
+
+							// Show loading indication
+							submitButton.setAttribute('data-kt-indicator', 'on');
+
+							// Disable button to avoid multiple click
+							submitButton.disabled = true;
+
+							// Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+							setTimeout(function () {
+								// Remove loading indication
+								submitButton.removeAttribute('data-kt-indicator');
+
+								// Enable button
+								submitButton.disabled = false;
+
+								form.submit(); // Submit form
+							}, 1500);
+						}
+					});
+				}
+			});
+
+		});
+
+		function goChangeItemTube(e) {
+			let _obj = $(e).val();
+			$("#itemtube_id").val(_obj);
+		}
+		function goChangeTemplate() {
+			let _obj = $("#ddlTemplate").val();
+			$("#template_id").val(_obj);
+
+			//get template data for example
+			$.ajax({
+				cache: false,
+				async: true,
+				type: "POST",
+				url: "@Url.Action("GetTemplateData", "Transaction")",
+				data: { templated_id: _obj },
+				success: function (data) {
+					if (data.status == "success") {
+
+						let _dataBuild = data.model;
+						$("#example").empty();
+						for (ii = 0; ii < _dataBuild.length; ii++) {
+
+							let _input = "";
+							if (_dataBuild[ii].column_type === "text") {
+								_input = `<input type="text" class="form-control" id="${_dataBuild[ii].column_code}">`;
+							} else if (_dataBuild[ii].column_type === "number") {
+								_input = `<input type="number" class="form-control" id="${_dataBuild[ii].column_code}">`;
+							} else {
+								_input = `<select class="form-select " data-control="select2" data-placeholder="Please Select" id="${_dataBuild[ii].column_code}">`;
+								//debugger
+								for (dd = 0; dd < _dataBuild[ii].column_ddl_value.split(',').length; dd++) {
+									_input += `<option value="${_dataBuild[ii].column_ddl_value.split(',')[dd]}">${_dataBuild[ii].column_ddl_value.split(',')[dd]}</option>`;
+								}
+								_input += `</select>`;
+							}
+
+							$("#example").append(`<div class="col-lg-12"><label class="form-label fs-6 fw-bold text-gray-700 mb-3 ${(_dataBuild[ii].column_is_required == true ? "required" : "")}">${_dataBuild[ii].column_display_text}</label><div class="mb-5 fv-row">${_input}</div></div>`);
+						}
+					} else {
+						$("#example").empty();
+						toastr.error("Something went wrong : " + data.message);
+					}
+				},
+				error: function (err) {
+					swal.close();
+					toastr.error("Something went wrong");
+				},
+				complete: function (data) {
+
+				}
+
+			});
+		}
+	</script>
+}

@@ -1,0 +1,1108 @@
+﻿@model List<MasterItem>
+@section HeaderTitle {
+Item Master
+}
+@{
+	ViewData["Title"] = "Item Master";
+	var Allow_day = ViewBag.allow_day;
+
+}
+<style>
+
+	.pointer {
+		cursor: pointer;
+	}
+
+	.c-normal {
+		cursor: default !important;
+	}
+
+	#kt_datatable td {
+		white-space: nowrap;
+		font-size: 9px !important;
+		padding: 4px 3px 4px 3px !important;
+	}
+
+	#kt_datatable th {
+		white-space: nowrap;
+		font-size: 9px !important;
+		padding: 4px 3px 4px 3px !important;
+	}
+</style>
+<!--begin::Card-->
+<div class="card">
+	<!--begin::Card header-->
+	<div class="card-header border-0 pt-6">
+		<!--begin::Card toolbar-->
+		<div class="card-toolbar">
+			<!--begin::Toolbar-->
+			<div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
+				<!--begin::Add user-->
+				<a class="btn btn-primary" asp-action="EditItemMaster" asp-controller="Master">
+					<i class="ki-duotone ki-plus fs-2"></i>Add Item Master
+				</a>
+				<a class="btn btn-success ms-2" onclick="importDataCSV()">
+					<i class="ki-duotone ki-file fs-2 "></i>Import CSV
+				</a>
+				@* <a class="btn btn-success ms-2" onclick="sendMail()">
+					<i class="ki-duotone ki-file fs-2 "></i>test mail
+				</a> *@
+				<input type="file" id="csvFileInput" hidden accept=".csv" />
+				<!--end::Add user-->
+			</div>
+			<!--end::Toolbar-->
+		</div>
+		<!--end::Card toolbar-->
+	</div>
+	<!--end::Card header-->
+	<!--begin::Card body-->
+	<div class="card-body py-4">
+		<!--begin::Table-->
+		<table class="table table table-bordered gy-5" id="kt_table">
+			<thead>
+				<tr class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
+					<th class="text-white text-center">No</th>
+					<th class="text-white text-center">Computer Name</th>
+					<th class="text-white text-center">Fix Asset</th>
+					<th class="text-white text-center">Details</th>
+					<th class="text-white text-center">Computer Type</th>
+					<th class="text-white text-center">Computer Brand</th>
+					<th class="text-white text-center">Serial Number</th>
+					<th class="text-white text-center">Available</th>
+					<th class="text-white text-center">type allow</th>
+					<th class="text-white text-center">status</th>
+					<th class="text-white text-center">#</th>
+				</tr>
+			</thead>
+			<tbody class="text-gray-600 fw-semibold">
+				@* @foreach (var item in Model)
+				{
+				<tr>
+				<td class="d-flex align-items-center">
+				<a asp-action="EditItemMaster" asp-controller="Master"
+				asp-route-mas_item_id="@item.mas_item_id">@item.title</a>
+				</td>
+				<td>
+				<div class="d-flex flex-column">
+				<span>@item.fix_asset</span>
+				</div>
+				</td>
+				<td>
+				@item.details
+				</td>
+				<td>@item.computer_type</td>
+				<td>@item.computer_brand</td>
+				<td>@item.serial_number</td>
+				<td class="text-center">@if (string.IsNullOrEmpty(item.emp_name))
+				{
+				<div class="badge badge-light text-success c-normal">Available</div>
+				}
+				else
+				{
+				<div class="badge badge-light text-warning pointer " onclick="ShowData('@item.mas_item_id')">
+				Unavailable</div>
+				}
+				</td>
+				<td class="text-center">
+				@if (item.is_allow)
+				{
+				<div class="badge badge-light text-success c-normal">Allow</div>
+				}
+				else
+				{
+				<div class="badge badge-light text-warning pointer " onclick="ShowAllowModal('@item.mas_item_id')">Not
+				Allow</div>
+				}
+				</td>
+				<td>@if (item.is_allow)
+				{
+				@item.aging_date.ToString("dd-MM-yyyy")
+				}
+				</td>
+				<td class="text-center">
+				<a asp-action="EditItemMaster" asp-controller="Master" asp-route-mas_item_id="@item.mas_item_id"
+				class="menu-link px-3"><i class="ki-outline ki-wrench text-primary fs-3"></i> </a>
+				<a href="#" onclick="goDelete('@item.mas_item_id', '@item.title')" class="menu-link px-3"><i
+				class="ki-outline ki-trash text-danger fs-3"></i> </a>
+				</td>
+				</tr>
+				} *@
+			</tbody>
+		</table>
+		<!--end::Table-->
+	</div>
+	<!--end::Card body-->
+</div>
+<!--end::Card-->
+<div class="modal fade" tabindex="-1" id="show_emp_detail_modal">
+	<div class="modal-dialog model-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title">Employee Detail</h3>
+
+				<!--begin::Close-->
+				<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+					aria-label="Close">
+					<i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+				</div>
+				<!--end::Close-->
+			</div>
+
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 render-detail">
+
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-light btn-xs btm-sm" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" tabindex="-1" id="show_allow_detail_modal">
+	<div class="modal-dialog model-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title">Allow Detail</h3>
+				<!--begin::Close-->
+				<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+					aria-label="Close">
+					<i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+				</div>
+				<!--end::Close-->
+			</div>
+
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 allow-detail">
+
+					</div>
+				</div>
+			</div>
+			<input id="is_allow" hidden>
+			<div class="modal-footer">
+				<button type="button" id="btn-allow" class="btn btn-primary btn-sm type-set-btn-save"
+					onclick="saveAllow()">Save</button>
+				<button type="button" class="btn btn-light btn-xs btm-sm" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<div class="modal fade" tabindex="-1" id="preview_csv_modal">
+	<div class="modal-dialog modal-fullscreen">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title title-manage-item">Preview Data CSV</h3>
+				<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+					aria-label="Close">
+					<i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+				</div>
+			</div>
+
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover table-checkable" id="kt_datatable">
+								<thead>
+									<tr>
+										<th class="text-center min-w-50px">no</th>
+										<th class="text-center">Computer Name</th>
+										<th class="text-center">fix_asset</th>
+										<th class="text-center">top_no</th>
+										<th class="text-center">status</th>
+										<th class="text-center">details</th>
+										<th class="text-center">computer_type</th>
+										<th class="text-center">computer_brand</th>
+										<th class="text-center">serial_number</th>
+										<th class="text-center">computer_model</th>
+										<th class="text-center">mit_ad_user</th>
+										<th class="text-center">start_date</th>
+										<th class="text-center">return_date</th>
+										<th class="text-center">location</th>
+										<th class="text-center">location_no</th>
+										<th class="text-center">location_sub</th>
+										<th class="text-center">mit_name</th>
+										<th class="text-center">emp_name</th>
+										<th class="text-center">section_code</th>
+										<th class="text-center">description</th>
+										<th class="text-center">emp_email</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary btn-sm type-set-btn-save"
+					onclick="saveDataCSV();">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+@section Scripts {
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+	<script>
+		var globalDataCSV = []
+		var globalDataItem = @Html.Raw(Json.Serialize(Model))
+			$(function () {
+				loadDataMasItem()
+				$("#csvFileInput").change(function (event) {
+					// Get the selected file
+					var input = $('#csvFileInput');
+					// Check if a file is selected
+					if (!input.val()) {
+						SweetAlertAsync('warning', 'อัพโหลดไฟล์ CSV', '');
+						return;
+					}
+
+					// Get the file extension
+					var extension = input.val().split('.').pop().toLowerCase();
+
+					// Check if the file has a CSV extension
+					if (extension !== 'csv') {
+						SweetAlertAsync('warning', 'อัพโหลดเฉพาะไฟล์ CSV', '');
+						return;
+					}
+					var file = event.target.files[0];
+
+					if (file) {
+						// Use PapaParse to parse the CSV data
+						Papa.parse(file, {
+							header: true,  // Treat the first row as headers
+							dynamicTyping: true,  // Convert numeric values to numbers
+							complete: function (results) {
+
+								// Do something with the data, e.g., display it in a table
+								displayData(results.data);
+								// clear input
+								$('#csvFileInput').val('');
+							}
+						});
+					}
+				});
+				var dateNow = new Date();
+				$("#kt_td_picker_basic").flatpickr({
+					format: "dd/MM/yyyy",
+					defaultDate: dateNow,
+				});
+			});
+		function displayData(data) {
+			let arrCSV = []
+			for (let item of data) {
+				let countKeyInObject = Object.keys(item).length;
+				if (countKeyInObject == 22) {
+					let objCSV = {
+						title: item.Title
+						, fix_asset: item.fix_asset
+						, top_no: item.top_no
+						, status: item.status
+						, details: item.details
+						, computer_type: item.computer_type
+						, computer_brand: item.computer_brand
+						, serial_number: item.serial_number
+						, computer_model: item.computer_model
+						, mit_ad_user: item.mit_ad_user
+						, start_date: item.start_date
+						, return_date: item.return_date
+						, location: item.location
+						, location_no: item.location_no
+						, location_sub: item.location_sub
+						, mit_name: item.MITName
+						, emp_name: item['MITName: Name surname']
+						, section_code: item.section_code
+						, description: item['S_Code: Description']
+						, emp_email: item.emp_email
+					}
+					arrCSV.push(objCSV);
+				}
+			}
+			globalDataCSV = arrCSV
+			renderTablePreview(arrCSV)
+			$('#preview_csv_modal').modal('show');
+		}
+		function renderTablePreview(data) {
+			// begin first table
+			var dt_invoice_table = $("#kt_datatable");
+			let dt_invoice_table_datatable = dt_invoice_table.DataTable({
+				destroy: true,
+				responsive: true,
+				data: data,
+				pageLength: 50,
+				columnDefs: [
+					{
+						targets: 0,
+						className: "text-center",
+						searchable: false,
+						orderable: false,
+						defaultContent: "1",
+					},
+					{
+						targets: 1,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.title;
+						},
+					},
+					{
+						targets: 2,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.fix_asset;
+						},
+					},
+					{
+						targets: 3,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.top_no;
+						},
+					},
+					{
+						targets: 4,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.status;
+						},
+					},
+					{
+						targets: 5,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.details;
+						},
+					},
+					{
+						targets: 6,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.computer_type;
+						},
+					},
+					{
+						targets: 7,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.computer_brand;
+						},
+					},
+					{
+						targets: 8,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.serial_number;
+						},
+					},
+					{
+						targets: 9,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.computer_model;
+						},
+					},
+					{
+						targets: 10,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.mit_ad_user;
+						},
+					},
+					{
+						targets: 11,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.start_date;
+						},
+					},
+					{
+						targets: 12,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.return_date;
+						},
+					},
+					{
+						targets: 13,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.location;
+						},
+					},
+					{
+						targets: 14,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.location_no;
+						},
+					},
+					{
+						targets: 15,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.location_sub;
+						},
+					},
+					{
+						targets: 16,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.mit_name;
+						},
+					},
+					{
+						targets: 17,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.emp_name;
+						},
+					},
+					{
+						targets: 18,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.section_code;
+						},
+					},
+					{
+						targets: 19,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.description;
+						},
+					},
+					{
+						targets: 20,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.emp_email;
+						},
+					},
+				],
+				order: [[0, "asc"]],
+				"language": {
+					"lengthMenu": "Show _MENU_",
+				},
+				"dom":
+					"<'row'" +
+					"<'col-sm-6 d-flex align-items-center justify-conten-start'l>" +
+					"<'col-sm-6 d-flex align-items-center justify-content-end'f>" +
+					">" +
+
+					"<'table-responsive'tr>" +
+
+					"<'row'" +
+					"<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
+					"<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
+					">"
+			});
+			setTimeout(() => {
+				dt_invoice_table_datatable.on('order.dt search.dt', function () {
+					let i = 1;
+					dt_invoice_table_datatable.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+						this.data(i++);
+					});
+				}).draw();
+			}, 300);
+		}
+		function importDataCSV() {
+
+			$('#csvFileInput').trigger('click');
+		}
+		function ShowData(mas_item_id) {
+			let pos = globalDataItem.findIndex(x => x.mas_item_id == mas_item_id);
+			let data = globalDataItem[pos];
+			let txt = "";
+			txt += `
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>MIT AD USER</label>
+										<input type="text" class="form-control mt-2" value="${data.mit_ad_user}" readonly />
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>MIT Name</label>
+										<input type="text" class="form-control mt-2" value="${data.mit_name}" readonly />
+									</div>
+								</div>
+								<div class="col-md-12 mt-5">
+									<div class="form-group">
+										<label>Employee Name</label>
+										<input type="text" class="form-control mt-2" value="${data.emp_name}" readonly />
+									</div>
+								</div>
+								<div class="col-md-12 mt-5">
+									<div class="form-group">
+										<label>Section Code</label>
+										<input type="text" class="form-control mt-2" value="${data.section_code}" readonly />
+									</div>
+								</div>
+								<div class="col-md-12 mt-5">
+									<div class="form-group">
+										<label>Description</label>
+										<input type="text" class="form-control mt-2" value="${data.description}" readonly />
+									</div>
+								</div>
+							`
+			$('.render-detail').html(txt);
+			$('#show_emp_detail_modal').modal('show');
+
+		}
+		function ShowAllowModal(is_allow, mas_item_id) {
+
+			let pos = globalDataItem.findIndex(x => x.mas_item_id == mas_item_id);
+			let data = globalDataItem[pos];
+			let allow_day = '@Allow_day';
+			let txt_allow = "";
+			let date = new Date();
+			let aging_date = new Date();
+			if (is_allow) 
+			{
+				allow_day = '@Allow_day';
+				txt_allow = "Allow" ;
+				aging_date = aging_date.setDate(date.getDate() + parseInt(allow_day));
+				aging_date = moment(aging_date).format('YYYY-MM-DD');
+			}
+			else 
+			{
+				txt_allow = "Not Allow";
+				allow_day = data.allow_day;
+				type_allow = data.type_allow;
+				aging_date = moment(data.aging_date).format('YYYY-MM-DD');
+				
+
+			}
+			
+		
+
+			let txt = "";
+			txt += `
+								<div class="col-md-12">
+									<div class="form-group">
+										<label>TYPE ALLOW</label>
+										<select type="text" class="form-select mt-2" id="allow_type" onchange="ChangeTypeAllow()" value="${data.mit_ad_user}" >
+													<option value="normal" selected>Normal</option>
+													<option value="repair">Repair</option>
+													<option value="vip">VIP</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-md-12 mt-5">
+									<div class="form-group">
+										<label>MIT AD USER</label>
+										<input type="text" class="form-control mt-2" value="${data.mit_ad_user}" readonly />
+									</div>
+								</div>
+								<div class="col-md-12 mt-5">
+									<div class="form-group">
+										<label>Employee Name</label>
+										<input type="text" class="form-control mt-2" value="${data.emp_name}" readonly />
+									</div>
+								</div>
+								<div class="col-md-12 mt-5">
+									<div class="form-group">
+										<label>Computer Type</label>
+										<input type="text" class="form-control mt-2" value="${data.computer_type}" readonly />
+									</div>
+								</div>
+								<div class="col-md-12 mt-5">
+									<div class="form-group">
+										<label>Section Code</label>
+										<input type="text" class="form-control mt-2" value="${data.serial_number}" readonly />
+									</div>
+								</div>
+								<div class="col-md-12 mt-5" id="row_aging_date">
+									<div class="form-group">
+										<label>Return date</label>
+										 	<input id="aging_date" class="form-control form-control-solid flatpickr-input-start" placeholder="Select a date" name="due_date" type="text" readonly="readonly">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-12 mt-5" id="row_allow_day">
+									<div class="form-group">
+										<label>Allow day</label>
+										<input onkeyup="calculateReturnDate()" type="number" id="allow_day" class="form-control mt-2" value="${allow_day}"/>
+									</div>
+								</div>
+								<input type="text" id="mas_item_id" class="form-control mt-2" value="${data.mas_item_id}" hidden />
+
+							`
+			$('#is_allow').val(is_allow);
+			$('#btn-allow').html(txt_allow);
+			$('.allow-detail').html(txt);
+			if (data.is_allow) {
+				$("#allow_type option[value='vip']").show();
+				$('#allow_type').val(type_allow).trigger('change');
+				$('#allow_type').val(type_allow).attr('disabled', true);
+				$('#allow_type').val(type_allow).attr('disabled', true);
+				if (type_allow == 'vip') {
+					$('#btn-allow').hide();
+				} else {
+					$('#btn-allow').show();
+				}
+				$('#aging_date').prop('disabled', true);
+				$('#allow_day').prop('disabled', true);
+			}
+			else {
+				$('#allow_type').val('normal').trigger('change');
+				$("#allow_type option[value='vip']").hide();
+				$('#allow_type').val('normal').attr('disabled', false);
+				$('#btn-allow').show();
+				$('#allow_day').prop('disabled', false);
+				$('#aging_date').prop('disabled', false);
+			}
+			$('.flatpickr-input-start').flatpickr({
+				enableTime: false,
+				dateFormat: "Y-m-d",
+				defaultDate: new Date(),
+				minDate: new Date(),
+				onChange: function (selectedDates, dateStr, instance) {
+					CalculateAgingDate()
+				}
+			});
+			$('#aging_date').val(aging_date);
+			//NaPann : Calculate First
+			//calculateReturnDate();
+
+			$('#show_allow_detail_modal').modal('show');
+		}
+		function calculateReturnDate() {
+			let allowDay = $('#allow_day').val()
+			if (!isNaN(allowDay)) {
+				if (allowDay != -1) {
+					let nowDate = moment().format('YYYY-MM-DD');
+					let agingDate = moment(nowDate).add(allowDay, 'days').format('YYYY-MM-DD');
+					$('#aging_date').val(agingDate);
+				} else {
+					let nowDate = moment().format('YYYY-MM-DD');
+					$('#allow_day').val(0);
+					$('#aging_date').val(nowDate);
+				}
+			} else {
+				$('#allow_day').val(0);
+				let nowDate = moment().format('YYYY-MM-DD');
+				$('#aging_date').val(nowDate);
+			}
+		}
+		function CalculateAgingDate() {
+			let agingDate = $('#aging_date').val();
+			@* console.log("agingDate", agingDate) *@
+			let nowDate = moment().format('YYYY-MM-DD');
+			let diff = moment(agingDate).diff(nowDate, 'days');
+			$('#allow_day').val(diff);
+			@* console.log("diff",diff) *@
+		}
+		function sendMail() {
+			$.ajax({
+				cache: false,
+				async: true,
+				type: "POST",
+				url: "@Url.Action("sendDataToUser", "Master")",
+				data: {},
+				success: function (data) {
+					if (data.status == "success") {
+						toastr.success("Send Mail Success");
+					} else {
+						toastr.error("Something went wrong : " + data.message);
+					}
+				},
+				error: function (err) {
+					swal.close();
+					toastr.error("Something went wrong");
+				}
+			});
+		}
+		async function saveDataCSV() {
+			let res = await new Promise((resolve) => {
+				$.ajax({
+					cache: false,
+					async: true,
+					type: "POST",
+					url: "@Url.Action("CheckDupplicate", "Master")",
+					data: { data_csv: JSON.stringify(globalDataCSV) },
+					success: function (data) {
+						resolve(data)
+
+					},
+					error: function (err) {
+						swal.close();
+						toastr.error("Something went wrong");
+						resolve('error')
+					}
+				});
+			})
+			if (res != 'error') {
+				txt = ``
+				if (res.status == "success") {
+					txt = ``
+				} else {
+					txt = `เมื่อมีรายการซ้ำระบบจะอัพเดท`
+				}
+				let cf = await SweetAlertConfirm('question', 'ยืนยันการทำรายการ', txt)
+				if (cf) {
+					await SweetAlertLoading(true, 'กำลังบันทึกข้อมูล...')
+					$.ajax({
+						cache: false,
+						async: true,
+						type: "POST",
+						url: "@Url.Action("SaveDataCSV", "Master")",
+						data: { data_csv: JSON.stringify(globalDataCSV) },
+						success: async function (data) {
+							await SweetAlertLoading(false, 'กำลังบันทึกข้อมูล...')
+							if (data.status == "success") {
+								await SweetAlertAsync('success', 'บันทึกข้อมูลสำเร็จ', '');
+								location.reload();
+							} else {
+								toastr.error("Something went wrong : " + data.message);
+
+							}
+
+						},
+						error: async function (err) {
+							await SweetAlertLoading(false, 'กำลังบันทึกข้อมูล...')
+							swal.close();
+							toastr.error("Something went wrong");
+							resolve('error')
+						}
+					});
+				}
+		@* toastr.error("Something went wrong : " + data.message); *@
+
+						}
+
+
+		}
+		function initDataMasterItem(data) {
+
+			// begin first tabawdle
+			var dt_invoice_table = $("#kt_table");
+			let dt_invoice_table_datatable = dt_invoice_table.DataTable({
+				destroy: true,
+				data: data,
+				pageLength: 50,
+				responsive: false,
+				columnDefs: [
+					{
+						targets: 0,
+						className: "text-center",
+						searchable: false,
+						orderable: false,
+						defaultContent: "1",
+					},
+					{
+						targets: 1,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.title;
+						},
+					},
+					{
+						targets: 2,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.fix_asset;
+						},
+					},
+					{
+						targets: 3,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.details;
+						},
+					},
+					{
+						targets: 4,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.computer_type;
+						},
+					},
+					{
+						targets: 5,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.computer_brand;
+						},
+					},
+					{
+						targets: 6,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.serial_number;
+						},
+					},
+					{
+						targets: 7,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							let txt = ''
+							if (!full.emp_name) {
+								txt += `<div class="badge badge-light text-success c-normal">Available</div>`
+							} else {
+								txt += `
+												<div class="badge badge-light text-warning pointer " onclick="ShowData('${full.mas_item_id}')">
+												Unavailable</div>
+											`
+							}
+							return txt;
+						},
+					},
+					{
+						targets: 8,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							let txt = ''
+							if (full.is_allow) {
+								if (full.type_allow == 'vip') {
+									txt += `<div class="badge badge-light text-primary  text-uppercase" >member vip</div>`
+								} else if (full.type_allow == 'repair') {
+									txt += `<div class="badge badge-light text-danger  text-uppercase" >${full.type_allow.toUpperCase()}</div>`
+								} else if (full.type_allow == 'normal') {
+									txt += `<div class="badge badge-light text-success text-uppercase" >${full.type_allow.toUpperCase()}</div>`
+								}
+							}
+							return txt;
+						},
+					},
+					{
+						targets: 9,
+						data: null,
+						className: "text-center ",
+						render: function (data, type, full, meta) {
+							let txt = ''
+							if (full.is_allow) {
+								txt += `<div class="badge badge-light text-success  pointer" onclick="ShowAllowModal(false,'${full.mas_item_id}')">Allow</div>`;
+								if (full.type_allow == 'normal') {
+									txt += ` <div class='x-fill'>Return Date: <span class="fw-bold text-primary">${full.aging_date ? moment(full.aging_date).format('DD/MM/YYYY') : '-'}</span></div>`;
+								}
+
+							}
+							else if (full.emp_name) {
+								txt += `
+												<div class="badge badge-light text-warning pointer " onclick="ShowAllowModal(true,'${full.mas_item_id}')">Not Allow</div>`
+							}
+							return txt
+						},
+					},
+
+					{
+						targets: 10,
+						data: null,
+						width: "80px",
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							let txt = `
+									<a href="/Master/EditItemMaster/?mas_item_id=${full.mas_item_id}"
+									class="menu-link px-1"><i class="ki-outline ki-notepad-edit text-primary fs-3"></i> </a>
+									<a href="#" onclick="goDelete('${full.mas_item_id}', '${full.title}')" class="menu-link px-1"><i
+										class="ki-outline ki-trash text-danger fs-3"></i> </a>
+								`
+
+							return txt
+						},
+					}
+				],
+				order: [[0, "asc"]],
+				dom:
+					'<"row ms-2 me-3"' +
+					'<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-2"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
+					'<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-2"f<"invoice_status mb-3 mb-md-0">>' +
+					">t" +
+					'<"row mx-2"' +
+					'<"col-sm-12 col-md-6"i>' +
+					'<"col-sm-12 col-md-6"p>' +
+					">",
+				language: {
+					sLengthMenu: "_MENU_",
+					search: "",
+					searchPlaceholder: "Search",
+				},
+				buttons: [
+					{
+						extend: 'excel',
+						text: '<i class="bi bi-file-earmark-spreadsheet me-2 text-white"></i>Excel',
+						className: 'btn btn-success btn-sec mx-3',
+						exportOptions: {
+							columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+						}
+
+					},
+				],
+			});
+			setTimeout(() => {
+				dt_invoice_table_datatable.on('order.dt search.dt', function () {
+					let i = 1;
+					dt_invoice_table_datatable.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+						this.data(i++);
+					});
+				}).draw();
+				$(".x-fill").parent().addClass("bg-light-primary")
+			}, 300);
+
+		}
+		function loadDataMasItem() {
+			$.ajax({
+				cache: false,
+				async: true,
+				type: "POST",
+				url: "@Url.Action("getItemMaster", "Master")",
+				data: { data_csv: JSON.stringify(globalDataCSV) },
+				success: function (data) {
+					if (data.status == "success") {
+						initDataMasterItem(data.data);
+					} else {
+						toastr.error("Something went wrong : " + data.message);
+
+					}
+
+				},
+				error: function (err) {
+					swal.close();
+					toastr.error("Something went wrong");
+					resolve('error')
+				}
+			});
+		}
+		function goDelete(mas_item_id, param_text) {
+
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "Do you want to Delete : " + param_text + " ?",
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Confirm',
+				customClass: {
+					confirmButton: "btn btn-primary",
+					cancelButton: "btn btn-danger"
+				},
+				buttonsStyling: false,
+			}).then(function (result) {
+				if (result.value) {
+					$.ajax({
+						cache: false,
+						async: true,
+						type: "POST",
+						url: "@Url.Action("DeleteItemMasItem", "Master")",
+						data: { mas_item_id: mas_item_id },
+						success: function (data) {
+							if (data.status == "success") {
+								location.reload();
+							} else {
+								toastr.error("Something went wrong : " + data.message);
+							}
+						},
+						error: function (err) {
+							swal.close();
+							toastr.error("Something went wrong");
+						},
+						complete: function (data) {
+
+						}
+
+					});
+				}
+			});
+
+		}
+		function saveAllow() {
+			let mas_item_id = $('#mas_item_id').val();
+			let param = globalDataItem.findIndex(x => x.mas_item_id == mas_item_id);
+			let data = globalDataItem[param];
+			let is_allow = $('#is_allow').val();
+			let txt_allow = is_allow ? "Allow" : "Not Allow";
+			@* let allow_day = '@Allow_day'; *@
+			let param_text = data.emp_name;
+			let aging_date = $('#aging_date').val();
+			let allow_day = $('#allow_day').val();
+			let allow_type = $('#allow_type').val();
+			data.is_allow = is_allow;
+			data['type_allow'] = allow_type;
+			data['allow_day'] = allow_day;
+			data['aging_date'] = aging_date;
+			@* console.log("data", data); *@
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "Do you want to " + txt_allow + " : " + param_text + " ?",
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Confirm',
+				customClass: {
+					confirmButton: "btn btn-primary",
+					cancelButton: "btn btn-danger"
+				},
+				buttonsStyling: false,
+			}).then(function (result) {
+				if (result.value) {
+					$.ajax({
+						cache: false,
+						async: true,
+						type: "POST",
+						url: "@Url.Action("updateAllow", "Master")",
+						data: data,
+						success: function (data) {
+							if (data.status == "success") {
+								location.reload();
+							} else {
+								toastr.error("Something went wrong : " + data.message);
+							}
+						},
+						error: function (err) {
+							swal.close();
+							toastr.error("Something went wrong");
+						},
+						complete: function (data) {
+
+						}
+
+					});
+				}
+			});
+
+		}
+		function ChangeTypeAllow() {
+			if ($('#allow_type').val() == 'normal') {
+				$('#row_allow_day').show();
+				$('#row_aging_date').show();
+			} else {
+				$('#row_allow_day').hide();
+				$('#row_aging_date').hide();
+			}
+		}
+
+	</script>
+}

@@ -1,0 +1,35 @@
+﻿@font-face {
+    font-family: chulabhorn likhit text bold;
+    src: url(../fonts/webfont//chulabhornlikittext-bold.woff2) format('woff2'),url(ChulabhornLikhitTextBeta2-Bold.woff) format('woff');
+    font-weight: 700;
+    font-style: normal
+}
+
+@font-face {
+    font-family: chulabhorn likhit text medium;
+    src: url(../fonts//webfont/chulabhornlikittext-medium.woff2) format('woff2'),url(ChulabhornLikhitTextBeta2-Medium.woff) format('woff');
+    font-weight: 500;
+    font-style: normal
+}
+
+@font-face {
+    font-family: chulabhorn likhit display medium;
+    src: url(../fonts//webfont/chulabhornlikitdisplay-medium.woff2) format('woff2'),url(ChulabhornLikhitDisplayBeta2-Medium.woff) format('woff');
+    font-weight: 500;
+    font-style: normal
+}
+
+@font-face {
+    font-family: chulabhorn likhit text regular;
+    src: url(../fonts/webfont/chulabhornlikittext-regular.woff2) format('woff2'),url(ChulabhornLikhitTextBeta2-Regular.woff) format('woff');
+    font-weight: 400;
+    font-style: normal
+}
+
+@font-face {
+    font-family: chulabhorn likhit text light;
+    src: url(../fonts/webfont/chulabhornlikittext-light.woff2) format('woff2'),url(ChulabhornLikhitTextBeta2-Light.woff) format('woff');
+    font-weight: 300;
+    font-style: normal
+}
+

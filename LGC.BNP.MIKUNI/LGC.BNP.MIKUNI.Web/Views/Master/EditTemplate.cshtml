@@ -1,0 +1,178 @@
+﻿@model TemplateData
+@{
+	ViewData["Title"] = "Add / Edit Template";
+	string _ex = (Model.id == null ? "1" : "0");
+	var templateBuild = ViewBag.TemplateBuildData as List<TemplateBuildData>;
+}
+@section HeaderTitle {
+	@ViewData["Title"]
+}
+
+<div class="card card-bordered">
+	<div class="card-body">
+		<form id="myForm" class="form" asp-action="EditTemplate" asp-controller="Master">
+			<!--begin::Scroll-->
+			<input type="hidden" asp-for="id_encrypt" />
+			<input type="hidden" asp-for="template_build_str" />
+			<div class="row gx-10 mb-5">
+
+				<!--begin::Col-->
+				<div class=" col-lg-10">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Code </label>&nbsp;
+					@if (_ex == "1")
+					{
+						<small class="text-primary cursor-pointer" onclick="genCode();"><i class="ki-outline ki-arrows-loop text-primary  fs-3"></i> Generate</small>
+					}
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="template_code">
+					</div>
+					<!--end::Input group-->
+				</div>
+
+				<div class=" col-lg-2">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Active </label>
+					<!--begin::Input group-->
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" asp-for="is_active" />
+					</div>
+					<!--end::Input group-->
+				</div>
+
+				<div class=" col-lg-12">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Name</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="template_name">
+					</div>
+				</div>
+
+				<div class=" col-lg-12">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Description</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="template_description">
+					</div>
+				</div>
+
+				<div class=" col-lg-12">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Template Build</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<select class="form-select " data-control="select2" multiple data-close-on-select="false" data-placeholder="Select Templete Build" id="ddlTempleteBuild">
+							@foreach (var item in templateBuild)
+							{
+								<option value="@item.id">@item.column_display_text</option>
+							}
+						</select>
+					</div>
+				</div>
+
+			</div>
+
+			<!--begin::Actions-->
+			<div class="text-center pt-10">
+				<button type="submit" id="kt_submit" class="btn btn-primary">
+					<!--begin::Indicator label-->
+					<span class="indicator-label">Save</span>
+					<!--end::Indicator label-->
+					<!--begin::Indicator progress-->
+					<span class="indicator-progress">
+						Please wait...
+						<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+					</span>
+					<!--end::Indicator progress-->
+				</button>
+				<a asp-action="Template" asp-controller="Master" class="btn btn-danger mx-3">Cancel</a>
+			</div>
+			<!--end::Actions-->
+		</form>
+	</div>
+
+</div>
+@section Scripts {
+	<script>
+	
+		$(function () {
+			
+			if ('@_ex' == '1') {
+				$("#template_code").prop("disabled", false);
+			} else {
+				$("#template_code").prop("disabled", true);
+				debugger
+				let _buildValue = []; let _buildData = '@Html.Raw(Model.template_build_str)';
+				$("#ddlTempleteBuild").val(_buildData.split(',')).trigger("change");
+			}
+
+			const form = document.getElementById('myForm');
+			var validator = FormValidation.formValidation(
+				form,
+				{
+					fields: {
+						'template_code': {
+							validators: {
+								notEmpty: {
+									message: '** required'
+								}
+							}
+						}
+					},
+					plugins: {
+						trigger: new FormValidation.plugins.Trigger(),
+						bootstrap: new FormValidation.plugins.Bootstrap5({
+							rowSelector: '.fv-row',
+							eleInvalidClass: '',
+							eleValidClass: ''
+						})
+					}
+				}
+			);
+
+			// Submit button handler
+			const submitButton = document.getElementById('kt_submit');
+			submitButton.addEventListener('click', function (e) {
+				// Prevent default button action
+				e.preventDefault();
+
+				// Validate form before submit
+				if (validator) {
+					validator.validate().then(function (status) {
+						@* console.log('validated!'); *@
+
+						if (status == 'Valid') {
+
+							//addon validation
+							$("#template_build_str").val($("#ddlTempleteBuild").val());
+
+							// Show loading indication
+							submitButton.setAttribute('data-kt-indicator', 'on');
+
+							// Disable button to avoid multiple click
+							submitButton.disabled = true;
+
+							// Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+							setTimeout(function () {
+								// Remove loading indication
+								submitButton.removeAttribute('data-kt-indicator');
+
+								// Enable button
+								submitButton.disabled = false;
+
+								form.submit(); // Submit form
+							}, 1500);
+						}
+					});
+				}
+			});
+
+		});
+
+		function pad2(n) { return n < 10 ? '0' + n : n }
+		function genCode() {
+			var date = new Date();
+			let _gen = date.getFullYear().toString() + pad2(date.getMonth() + 1) + pad2(date.getDate()) + pad2(date.getHours()) + pad2(date.getMinutes()) + pad2(date.getSeconds());
+			$("#template_code").val("TP" + _gen);
+		}
+
+	</script>
+}

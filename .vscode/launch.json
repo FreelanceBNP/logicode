@@ -1,0 +1,53 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Web Socket",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_WebSocket",
+            "program": "${workspaceFolder}/LGC.BNP.MIKUNI/LGC.BNP.MIKUNI.WebSocket/bin/Debug/net5.0/LGC.BNP.MIKUNI.WebSocket.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/LGC.BNP.MIKUNI/LGC.BNP.MIKUNI.WebSocket",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": "Web",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_Web",
+            "program": "${workspaceFolder}/LGC.BNP.MIKUNI/LGC.BNP.MIKUNI.Web/bin/Debug/net7.0/LGC.BNP.MIKUNI.Web.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/LGC.BNP.MIKUNI/LGC.BNP.MIKUNI.Web",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+    ]
+}

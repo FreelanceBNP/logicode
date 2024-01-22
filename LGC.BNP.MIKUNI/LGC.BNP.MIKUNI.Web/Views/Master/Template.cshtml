@@ -1,0 +1,636 @@
+﻿@model List<MasTagMapping>
+@section HeaderTitle {
+	@ViewData["Title"]
+}
+@{
+	ViewData["Title"] = "Tag Registration";
+}
+<div class="card">
+	<div class="card-header border-0 pt-6">
+		<div class="card-toolbar">
+			<div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
+				@* <a class="btn btn-primary">
+					<i class="ki-duotone ki-plus fs-2"></i>Add Tag
+				</a> *@
+				<a class="btn btn-success ms-2" onclick="openScanTagCodeModal()">
+					<i class="ki-duotone ki-magnifier fs-2"></i>Scan Tag
+				</a>
+				<a class="btn btn-primary ms-2" onclick="mappingMasItem()">
+					<i class="ki-duotone ki-plus fs-2"></i>Mapping Tag
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="card-body py-4">
+		<table class="table table table-bordered gy-5" id="kt_table">
+			<thead>
+				<tr class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
+					<th class="min-w-125px pl-2">No</th>
+					<th class="min-w-125px">Tag Code</th>
+					<th class="min-w-125px">Item Name</th>
+					<th class="min-w-125px">Create Date</th>
+					<th class="min-w-125px">Status</th>
+					<th class="min-w-125px text-center">Actions</th>
+				</tr>
+			</thead>
+			<tbody class="text-gray-600 fw-semibold">
+				@if (Model.Count() > 0) {
+					int index = 1;
+					@foreach (var item in Model)
+					{
+						// datetime format
+						//string date = item.created_date.ToString("dd/MM/yyyy");
+						<tr>
+							<td class="d-flex align-items-center">
+								@index
+							</td>
+							<td>
+								<div class="d-flex flex-column">
+									<a>@item.tag_serial</a>
+								</div>
+							</td>
+							<td>
+								@if (item.status == "active") {
+									<div class="d-flex flex-column tag-id-@item.tag_id ">
+										<select class="form-select render-option-item-@item.tag_id" onchange="setItemPairing('@item.tag_id', 'main')">
+
+										</select>
+									</div>
+								} else {
+									<div>
+										@item.fix_asset @item.computer_brand
+									</div>
+								}
+							</td>
+							<td class="text-center">
+								<div class="d-flex flex-column">
+									<span>@item.created_date.ToString("dd/MM/yyyy")</span>
+								</div>
+							</td>
+							<td class="text-center">
+								@if (item.status == "active")
+								{
+									<div class="badge badge-light text-success">@item.status</div>
+								} else if (item.status == "mapping") {
+									<div class="badge badge-light text-primary">@item.status</div>
+								} else
+								{
+									<div class="badge badge-light text-danger">@item.status</div>
+								}
+							</td>
+							<td class="text-center">
+								@if (item.status == "active") {
+									<a  class="menu-link px-3" onclick="mappingMasItem('@item.tag_id', '@item.tag_serial')"><i class="ki-outline ki-wrench text-primary fs-3"></i> </a>
+								}
+								else if (item.status == "mapping") {
+									<a  class="menu-link px-3" onclick="cancelMapping('@item.tag_id', '@item.tag_serial')"><i class="ki-outline ki-disconnect text-warning fs-3"></i> </a>
+								}
+								<a href="#" onclick="goDelete('@item.tag_id', '@item.tag_serial')" class="menu-link px-3"><i class="ki-outline ki-trash text-danger fs-3"></i> </a>
+							</td>
+						</tr>
+						index++;
+					}
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="modal fade" tabindex="-1" id="scan_tag_code">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title">Scan Tag Code</h3>
+				<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+					aria-label="Close">
+					<i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+				</div>
+			</div>
+
+			<div class="modal-body">
+				<table class="table table table-bordered gy-5" id="kt_table">
+					<thead>
+						<tr class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
+							<th class=" text-white min-w-125px pl-2">No</th>
+							<th class=" text-white min-w-125px">Tag Code</th>
+							<th class=" text-white min-w-125px">Count</th>
+						</tr>
+					</thead>
+					<tbody class="text-gray-600 fw-semibold" id="rederTag">
+						
+					</tbody>
+				</table>
+				</table>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary btn-sm" onclick="saveDataTag();">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" tabindex="-1" id="mapping_mas_item">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title">Mapping Item</h3>
+				<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+					aria-label="Close">
+					<i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+				</div>
+			</div>
+
+			<div class="modal-body">
+				<table class="table table table-bordered gy-5" id="mapping_table_code">
+					<thead>
+						<tr class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
+							<th class="text-white min-w-125px pl-2">Tag Code</th>
+							<th class="text-white min-w-125px">Item Code</th>
+						</tr>
+					</thead>
+					<tbody class="text-gray-600 fw-semibold" id="rederTag">
+						
+					</tbody>
+				</table>
+				</table>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-light btn-xs" data-bs-dismiss="modal">Close</button>
+				@* <button type="button" class="btn btn-primary btn-sm" onclick="saveDataTag();">Save</button> *@
+			</div>
+		</div>
+	</div>
+</div>
+@section Scripts {
+	<script>
+		let globalTagMappingList = @Html.Raw(Json.Serialize(Model));
+		let globalTagList = []
+		$(async function () {
+			@* console.log(globalTagMappingList) *@
+			initDatatableMain(globalTagMappingList)
+			await loadItemList()
+			
+		});
+		function initDatatableMain(data) {
+			var dt_invoice_table = $("#kt_table");
+			let dt_invoice_table_datatable = dt_invoice_table.DataTable({
+				destroy: true,
+				data: data,
+				columnDefs: [
+					{
+						targets: 0,
+						className: "text-center",
+						searchable: false,
+						orderable: false,
+						defaultContent: "1",
+					},
+					{
+						targets: 1,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							return `<span class="text-primary">${full.tag_serial}</span>`;
+						},
+					},
+					{
+						targets: 2,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							let txt = ''
+							@* let isSelected = '',
+								isDisabled = ''
+							if (full.status == 'mapping') {
+								isDisabled = 'disabled'
+							} 
+							let txt = `<select ${isDisabled} class="form-select tag-${full.tag_id}" id="tag-${full.tag_serial}"  onchange="setItemPairing('${full.tag_id}', 'modal')">`
+								txt += `<option value="">Please Select Item</option>`
+							dataItem.forEach((item, index) => {
+								if (full.status == 'mapping' && item.mas_item_id == full.mas_item_id) {
+									isSelected = 'selected'
+								} else {
+									isSelected = ''
+								}
+								txt += `<option value="${item.mas_item_id}" ${isSelected}>${item.fix_asset}  ${item.computer_model}</option>`
+							})
+							txt += `</select>`
+							return txt; *@
+							if (full.status == "active") {
+								txt = `<div class="d-flex flex-column tag-id-${full.tag_id}">
+									<select class="form-select render-option-item-${full.tag_id}" onchange="setItemPairing('${full.tag_id}', 'main')">
+
+									</select>
+								</div>`
+							} else {
+								txt = `
+									<div>
+										${full.fix_asset} ${full.computer_brand}
+									</div>
+								`
+							}
+							return txt;
+						},
+					},
+					{
+						targets: 3,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							return `${moment(full.created_date).format('DD/MM/YYYY HH:mm') }`;
+						},
+					},
+					{
+						targets: 4,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							let txt = ''
+							if (full.status == "active")
+							{
+								txt = `<div class="badge badge-light text-success">${full.status}</div>`
+							} else if (full.status == "mapping") {
+								txt =  `<div class="badge badge-light text-primary">${full.status}</div> `
+							} else {
+								txt =  `<div class="badge badge-light text-danger">${full.status}</div> `
+							}
+							return txt;
+						},
+					},
+					{
+						targets: 5,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							let txt = ''
+							if (full.status == "active") {
+								txt += `<a  class="menu-link px-3" onclick="mappingMasfull('${full.tag_id}', '${full.tag_serial}')"><i class="ki-outline ki-wrench text-primary fs-3"></i> </a>`
+							}
+							else if (full.status == "mapping") {
+								txt += `<a  class="menu-link px-3" onclick="cancelMapping('${full.tag_id}', '${full.tag_serial}')"><i class="ki-outline ki-disconnect text-warning fs-3"></i> </a>`
+							}
+							txt += `<a href="#" onclick="goDelete('${full.tag_id}', '${full.tag_serial}')" class="menu-link px-3"><i class="ki-outline ki-trash text-danger fs-3"></i> </a>`
+							return txt;
+						},
+					},
+				],
+				order: [[0, "asc"]],
+				"language": {
+					"lengthMenu": "Show _MENU_",
+				},
+				"dom":
+					"<'row'" +
+					"<'col-sm-6 d-flex align-items-center justify-conten-start'l>" +
+					"<'col-sm-6 d-flex align-items-center justify-content-end'f>" +
+					">" +
+
+					"<'table-responsive'tr>" +
+
+					"<'row'" +
+					"<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
+					"<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
+					">"
+			});
+			 setTimeout(() => {
+            dt_invoice_table_datatable.on('order.dt search.dt', function () {
+                let i = 1;
+                dt_invoice_table_datatable.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+        }, 300);
+		}
+		async function cancelMapping(tag_id) {
+			let cf = await SweetAlertConfirm(type = 'warning', title = 'ยืนยันการทำรายการ')
+			if (cf) {
+				let obj = {tag_id: tag_id}
+				let res = await new Promise((resolve)=> {
+					$.ajax({
+						cache: false,
+						async: true,
+						type: "POST",
+						url: "@Url.Action("CancelMappingTag", "Master")",
+						data: obj,
+						success: function (data) {
+								@* console.log(data) *@
+							if (data.status == "success") {
+								loadItemList('main')
+								@* initSelectOptionItem(data.dataTag, data.data) *@
+							} else {
+								toastr.error("Something went wrong : " + data.message);
+							}
+						},
+						error: function (err) {
+							swal.close();
+							toastr.error("Something went wrong");
+						},
+						complete: function (data) {
+
+						}
+
+					});
+				})
+			}
+		}
+		async function setItemPairing(tag_id, type = 'main') {
+			let valueTemp = ''
+			if (type == 'main') {
+				valueTemp = $(`.render-option-item-${tag_id}`).val();
+			} else {
+				valueTemp = $(`.tag-${tag_id}`).val()
+			}
+			@* $(`.render-option-item-${tag_id}`).val('-').trigger('change'); *@
+			let cf = await SweetAlertConfirm('warning', 'ยืนยันการทำรายการ')
+			if (cf) {
+				let obj = {
+					tag_id: tag_id,
+					mas_item_id: valueTemp
+				}
+				let res = await new Promise((resolve)=> {
+					$.ajax({
+						cache: false,
+						async: true,
+						type: "POST",
+						url: "@Url.Action("MappingTag", "Master")",
+						data: obj,
+						success: function (data) {
+								@* console.log(data) *@
+							if (data.status == "success") {
+								if (type == 'main') {
+									loadItemList()
+								} else {
+									mappingMasItem()
+								}
+							} else {
+								toastr.error("Something went wrong : " + data.message);
+							}
+						},
+						error: function (err) {
+							swal.close();
+							toastr.error("Something went wrong");
+						},
+						complete: function (data) {
+
+						}
+
+					});
+				})
+				@* console.log(valueTemp) *@
+			}
+                @* $(`#val-item-${id}`).prop('hidden', true); *@
+                @* let itemList = getListItem(false)
+                const componentCode = $(`#component-name-${id}`).val();
+                let pos = itemList.filter(item => item.item_code == componentCode);
+                if (pos.length > 1) {
+                   
+                    $(`#component-name-${id}`).val('').trigger('change');
+                   
+                } *@
+			@* Swal.fire({
+				title: 'Warning !',
+				icon: 'warning',
+				text: 'Component duplicate. Please select another component.',
+			});
+			$(`.render-option-item-${tag_id}`).val('').trigger('change');
+			return *@
+            
+		}
+		async function loadItemList(type = 'main') {
+			let res = await new Promise((resolve)=> {
+				$.ajax({
+					cache: false,
+					async: true,
+					type: "POST",
+					url: "@Url.Action("getItemMaster", "Master")",
+					data: {},
+					success: function (data) {
+							@* console.log(data) *@
+						if (data.status == "success") {
+							if (type == 'main') {
+								initDatatableMain(data.dataTag)
+							}
+							initSelectOptionItem(data.dataTag, data.data)
+						} else {
+							toastr.error("Something went wrong : " + data.message);
+						}
+					},
+					error: function (err) {
+						swal.close();
+						toastr.error("Something went wrong");
+					},
+					complete: function (data) {
+
+					}
+
+				});
+			})
+			
+		}
+		function initSelectOptionItem(dataTag, data) {
+			
+	
+			let	txt = `<option value="-">Please Select Item</option>`
+			data.forEach((item, index) => {
+				txt += `<option value="${item.mas_item_id}">${item.fix_asset} ${item.computer_model}</option>`
+			})
+			for (let itemTag of dataTag) {
+				$(`.render-option-item-${itemTag.tag_id}`).html(txt)
+				$(`.render-option-item-${itemTag.tag_id}`).select2({
+					placeholder: "Please Select Item",
+					allowClear: true,
+				});
+			}
+			
+			
+		}
+		function mappingMasItem(tag_id, tag_serial) {
+			$.ajax({
+				cache: false,
+				async: true,
+				type: "POST",
+				url: "@Url.Action("getItemMaster", "Master")",
+				data: { list_tag: JSON.stringify(globalTagList) },
+				success: function (data) {
+						@* console.log(data) *@
+					if (data.status == "success") {
+						renderMappingDatable(data.dataTag , data.data)
+					} else {
+						toastr.error("Something went wrong : " + data.message);
+					}
+				},
+				error: function (err) {
+					swal.close();
+					toastr.error("Something went wrong");
+				},
+				complete: function (data) {
+
+				}
+
+			});
+			$('#mapping_mas_item').modal('show');
+		}
+		function renderMappingDatable(dataTag, dataItem) {
+			var dt_invoice_table = $("#mapping_table_code");
+			var tableSN = dt_invoice_table.DataTable({
+				destroy: true,
+				data: dataTag,
+				columnDefs: [
+					{
+						targets: 0,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							return `${full.tag_serial}`;
+						},
+					},
+					{
+						targets: 1,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							let isSelected = '',
+								isDisabled = ''
+							if (full.status == 'mapping') {
+								isDisabled = 'disabled'
+							} 
+							let txt = `<select ${isDisabled} class="form-select tag-${full.tag_id}" id="tag-${full.tag_serial}"  onchange="setItemPairing('${full.tag_id}', 'modal')">`
+								txt += `<option value="">Please Select Item</option>`
+							dataItem.forEach((item, index) => {
+								if (full.status == 'mapping' && item.mas_item_id == full.mas_item_id) {
+									isSelected = 'selected'
+								} else {
+									isSelected = ''
+								}
+								txt += `<option value="${item.mas_item_id}" ${isSelected}>${item.fix_asset}  ${item.computer_model}</option>`
+							})
+							txt += `</select>`
+							return txt;
+						},
+					}
+				],
+				order: [[0, "asc"]],
+				"language": {
+					"lengthMenu": "Show _MENU_",
+				},
+				"dom":
+					"<'row'" +
+					"<'col-sm-6 d-flex align-items-center justify-conten-start'l>" +
+					"<'col-sm-6 d-flex align-items-center justify-content-end'f>" +
+					">" +
+
+					"<'table-responsive'tr>" +
+
+					"<'row'" +
+					"<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
+					"<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
+					">"
+			});
+			for (let item of dataTag) {
+				$(`#tag-${item.tag_serial}`).select2({
+					placeholder: "Please Select Item",
+					allowClear: true,
+					dropdownParent: $("#mapping_mas_item")
+				});
+			}
+			
+		}
+		function openScanTagCodeModal() {
+			$('#scan_tag_code').modal('show');
+			try {
+				let connection = new signalR.HubConnectionBuilder()
+				.withUrl("https://qqx7xrgm-12001.asse.devtunnels.ms/notifications", {
+					skipNegotiation: true,
+					transport: signalR.HttpTransportType.WebSockets
+				})
+				.build();
+
+				connection.start();
+				connection.on('notification', function (obj) {
+					var _data = JSON.parse(obj);
+					let posTag = globalTagList.findIndex(x => x.tag_code == _data.tag_code)
+					if (posTag != -1) {
+						globalTagList[posTag].count = globalTagList[posTag].count + 1
+					} else {
+						globalTagList.push({
+							tag_code: _data.tag_code,
+							count: 1
+						})
+					}
+					renderTagTable(globalTagList)
+					@* console.log('notification', _data) *@
+
+				});
+			} catch (error) {
+				console.error(error)
+			}
+		}
+		function renderTagTable(globalTagList) {
+			let txt = ``
+			globalTagList.forEach((item, index) => {
+				txt += `<tr>
+						<td>${index + 1}</td>
+						<td>${item.tag_code}</td>
+						<td>${item.count}</td>
+					</tr>`
+			})
+			$('#rederTag').html(txt)
+		}
+		async function saveDataTag() {
+			let cf = await SweetAlertConfirm(type = 'warning', title = 'ยืนยันการทำรายการ')
+			if (cf) {
+				$.ajax({
+					cache: false,
+					async: true,
+					type: "POST",
+					url: "@Url.Action("SaveTag", "Master")",
+					data: { list_tag: JSON.stringify(globalTagList) },
+					success: function (data) {
+						if (data.status == "success") {
+							loadItemList('main')
+						} else {
+							toastr.error("Something went wrong : " + data.message);
+						}
+					},
+					error: function (err) {
+						swal.close();
+						toastr.error("Something went wrong");
+					},
+					complete: function (data) {
+
+					}
+
+				});
+			}
+		}
+		async function goDelete(tag_id, param_text) {
+			let cf = await SweetAlertConfirm('warning', 'ยืนยันการทำรายการ')
+			if (cf) {
+				$.ajax({
+					cache: false,
+					async: true,
+					type: "POST",
+					url: "@Url.Action("DeleteTagId", "Master")",
+					data: { tag_id: tag_id },
+					success: function (data) {
+						if (data.status == "success") {
+							toastr.success("Delete Success");
+							// init
+							loadItemList('main')
+						} else {
+							toastr.error("Something went wrong : " + data.message);
+						}
+					},
+					error: function (err) {
+						swal.close();
+						toastr.error("Something went wrong");
+					},
+					complete: function (data) {
+
+					}
+
+				});
+			}
+		}
+
+	</script>
+}

@@ -1,0 +1,356 @@
+	@model List<MasterItem>
+@section HeaderTitle {
+@ViewBag.title
+}
+@{
+	ViewData["Title"] = ViewBag.title;
+	var Allow_day = ViewBag.allow_day;
+
+}
+<style>
+	.buttons-excel {
+		background-color: #50cd89 !important;
+		color: #fff !important;
+		border-color: #50cd89 !important;
+	}
+	.pointer {
+		cursor: pointer;
+	}
+
+	.c-normal {
+		cursor: default !important;
+	}
+	#kt_datatable td {
+		white-space: nowrap;
+		font-size: 9px !important;
+		padding: 4px 3px 4px 3px !important;
+	}
+	#kt_datatable th {
+		white-space: nowrap;
+		font-size: 9px !important;
+		padding: 4px 3px 4px 3px !important;
+	}
+</style>
+<!--begin::Card-->
+<div class="card">
+	<div class="card-body py-4">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="fv-row mb-7 fv-plugins-icon-container">
+                    <label class=" fw-semibold fs-6 mb-2">Title</label>
+                    <input type="text" id="title" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Title" value="">
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="fv-row mb-7 fv-plugins-icon-container">
+                    <label class=" fw-semibold fs-6 mb-2">Fix Asset</label>
+                    <input type="text" id="fix_asset" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Fix Asset" value="">
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
+            </div>
+            <div class="col-md-3 ">
+                <div class="fv-row mb-7 fv-plugins-icon-container">
+                    <label class=" fw-semibold fs-6 mb-2">Serial Number</label>
+                    <input type="text" id="serial_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Serial Number" value="">
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
+            </div>
+
+			<div class="col-md-3 ">
+			&nbsp;
+			</div>
+
+            <div class="col-md-3">
+                <div class="fv-row mb-7 fv-plugins-icon-container">
+                    <label class=" fw-semibold fs-6 mb-2">Start Date</label>
+                  <input id="start_date" class="form-control form-control-solid ps-12 flatpickr-input-start" placeholder="Select a date" name="due_date" type="text" readonly="readonly">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="fv-row mb-7 fv-plugins-icon-container">
+                    <label class=" fw-semibold fs-6 mb-2">End Date</label>
+                    <input id="end_date" class="form-control form-control-solid ps-12 flatpickr-input-end" placeholder="Select a date" name="due_date" type="text" readonly="readonly">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button  id="loadDataMasItem" class="btn btn-primary mt-8" onclick="loadDataMasItem()">
+                    <span class="indicator-label">
+                        Search
+                    </span>
+                    <span class="indicator-progress">
+                        Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+		<table class="table table table-bordered gy-5" id="kt_table">
+			<thead>
+				<tr class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
+					<th class="min-w-125px pl-2">No</th>
+					<th class="min-w-125px ">Title</th>
+					<th class="min-w-125px">Fix Asset</th>
+
+					<th class="min-w-125px">Computer Type</th>
+					@* <th class="min-w-125px text-center">computer_brand</th>
+					<th class="min-w-125px text-center">serial_number</th>
+					<th class="min-w-125px text-center">computer_model</th> *@
+
+					<th class="min-w-125px text-center">Mit Name</th>
+					<th class="min-w-125px text-center">Employee name</th>
+					@* <th class="min-w-125px text-center">description</th> *@
+					<th class="min-w-125px text-center">Allow</th>
+					<th class="min-w-125px text-center">Type allow</th>
+					<th class="min-w-125px text-center">Log Date</th>
+				</tr>
+			</thead>
+			<tbody class="text-gray-600 fw-semibold">
+			</tbody>
+		</table>
+	</div>
+</div>
+@section Scripts {
+	<script>
+		var globalDataCSV = []
+		var globalDataItem = []
+        var dt_invoice_table_datatable = null;
+        const submitButton = document.getElementById('loadDataMasItem');
+			$(function () {
+				loadDataMasItem()
+                $('.flatpickr-input-start').flatpickr({
+                    enableTime: false,
+                    dateFormat: "Y-m-d",
+                    defaultDate: new Date(),
+                    onChange: function (selectedDates, dateStr, instance) {
+                        @* console.log(selectedDates)
+                        console.log(dateStr)
+                        console.log(instance) *@
+                    }
+                });
+                $('.flatpickr-input-end').flatpickr({
+                    enableTime: false,
+                    dateFormat: "Y-m-d",
+                    defaultDate: new Date(),
+                    onChange: function (selectedDates, dateStr, instance) {
+                        @* console.log(selectedDates)
+                        console.log(dateStr)
+                        console.log(instance) *@
+                    }
+                });
+			});
+		
+		function btnOnload() {
+            submitButton.setAttribute('data-kt-indicator', 'on');
+            submitButton.disabled = true;
+        }
+        function btnLoaded() {
+            setTimeout(() => {
+                submitButton.removeAttribute('data-kt-indicator');
+                submitButton.disabled = false;
+            }, 1000);
+          
+        }
+		function initDataMasterItem(data) {
+			var dt_invoice_table = $("#kt_table");
+			dt_invoice_table_datatable = dt_invoice_table.DataTable({
+				destroy: true,
+				data: data,
+				pageLength: 50,
+				columnDefs: [
+					{
+						targets: 0,
+						className: "text-center",
+						searchable: false,
+						orderable: false,
+						defaultContent: "1",
+					},
+					{
+						targets: 1,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.title;
+						},
+					},
+					{
+						targets: 2,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.fix_asset;
+						},
+					},
+					{
+						targets: 3,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return `
+                            <div>Computer Type: <span class="fw-bold text-primary">${full.computer_type}</span></div>
+                            <div>Computer Brand: <span class="fw-bold text-primary">${full.computer_brand}</span></div>
+                            <div>Serial Number: <span class="fw-bold text-primary">${full.serial_number}</span></div>
+                            <div>Computer Model: <span class="fw-bold text-primary">${full.computer_model}</span></div>
+                            `;
+						},
+					},
+					{
+						targets: 4,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.mit_name;
+						},
+					},
+					{
+						targets: 5,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return full.emp_name;
+						},
+					},
+					{
+						targets: 6,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							let txt = ''
+							if (full.is_allow) {
+								txt += `<div class="badge badge-light text-success  " >Allow</div>`
+							} 
+							else {
+								txt += `
+									<div class="badge badge-light text-warning  " >Not Allow</div>`
+							}
+							return txt
+						},
+					},
+					{
+						targets: 7,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+                            let txt = ''
+                            if (full.type_allow == 'privilege') {
+                                txt += `<div class="badge badge-light text-primary  " >${full.type_allow.toUpperCase()}</div>`
+                            }  else if (full.type_allow == 'repair') {
+                                txt += `<div class="badge badge-light text-danger  " >${full.type_allow.toUpperCase()}</div>`
+                            } else if (full.type_allow == 'normal') {
+                                txt += `<div class="badge badge-light text-success  " >${full.type_allow.toUpperCase()}</div>`
+                            }
+							return txt;
+						},
+					},
+					{
+						targets: 8,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+                           return `
+                            <div>Update By: <span class="fw-bold text-primary">${full.update_by ? full.update_by : '-'}</span></div>
+                            <div>Update Date: <span class="fw-bold text-primary">${full.update_date ? moment(full.update_date).format('DD/MM/YYYY') : '-'}</span></div>
+                             <div>Log Date: <span class="fw-bold text-danger">${moment(full.log_date).format('DD/MM/YYYY')}</span></div>
+                            `;
+						},
+					}
+				],
+				order: [[0, "asc"]],
+				dom:
+					'<"row ms-2 me-3"' +
+					'<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-2"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
+					'<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-2"f<"invoice_status mb-3 mb-md-0">>' +
+					">t" +
+					'<"row mx-2"' +
+					'<"col-sm-12 col-md-6"i>' +
+					'<"col-sm-12 col-md-6"p>' +
+					">",
+				language: {
+					sLengthMenu: "_MENU_",
+					search: "",
+					searchPlaceholder: "Search",
+				},
+				buttons: [
+					{
+						extend: 'excel',
+						text: '<i class="bi bi-file-earmark-spreadsheet me-2 text-white"></i>Excel',
+						className: 'btn btn-success btn-sec mx-3',
+						exportOptions: {
+							columns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+						}
+
+					},
+				],
+			});
+			setTimeout(() => {
+				dt_invoice_table_datatable.on('order.dt search.dt', function () {
+					let i = 1;
+					dt_invoice_table_datatable.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+						this.data(i++);
+					});
+				}).draw();
+                $(".dataTables_filter .form-control").removeClass("form-control-sm");
+                $(".dataTables_length .form-select").removeClass("form-select-sm");
+                var label = $('<label>').addClass('ml-3 form-label').attr('id', 'label-status-user')
+                    .appendTo('#kt_table_filter')
+                    .css({
+                        'margin-left': '0.25rem',
+                    });
+                    console.log(label)
+                $('<input>').attr('id', 'search').appendTo('#search');
+                var inputSelect = $('<select>').addClass('form-select form-select-solid').attr('id', 'select-status-user').appendTo('#label-status-user')
+                    .on('change', async function () {
+                        await filterbystatus($(this).val());
+                    });
+
+                inputSelect.append($('<option>').text('MEMBER VIP').val('MEMBER VIP'));
+                inputSelect.append($('<option>').text('REPAIR').val('REPAIR'));
+                inputSelect.append($('<option>').text('NORMAL').val('NORMAL'));
+                inputSelect.append($('<option>').text('All').val(''));
+                $('#select-status-user').val('');
+			}, 300);
+		
+		}
+        function filterbystatus(status) {
+            if (dt_invoice_table_datatable !== null) {
+                dt_invoice_table_datatable.column(7).search(status, false, true).draw();
+            }
+        }
+		function loadDataMasItem() {
+            btnOnload();
+            let objReq = {
+                title: $('#title').val(),
+                fix_asset: $('#fix_asset').val(),
+                serial_number: $('#serial_number').val(),
+                start_date: $('#start_date').val(),
+                end_date: $('#end_date').val(),
+            }
+			$.ajax({
+				cache: false,
+				async: true,
+				type: "POST",
+				url: "@Url.Action("GetReportLog", "Master")",
+				data: objReq,
+				success: function (data) {
+                    btnLoaded()
+					if (data.status == "success") {
+						initDataMasterItem(data.data);
+					} else {
+						toastr.error("Something went wrong : " + data.message);
+
+					}
+					
+				},
+				error: function (err) {
+                    btnLoaded()
+					swal.close();
+					toastr.error("Something went wrong");
+					resolve('error')
+				}
+			});
+		}
+		
+
+		
+
+	</script>
+}

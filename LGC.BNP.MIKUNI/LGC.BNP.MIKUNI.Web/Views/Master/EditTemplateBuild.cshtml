@@ -1,0 +1,229 @@
+﻿@model TemplateBuildData
+@{
+	ViewData["Title"] = "Add / Edit Template Build";
+	string _ex = (Model.id == null ? "1" : "0");
+	string[] template_type = new string[] { "text", "number", "dropdown" }; 
+}
+@section HeaderTitle {
+	@ViewData["Title"]
+}
+
+<div class="card card-bordered">
+	<div class="card-body">
+		<form id="myForm" class="form" asp-action="EditTemplateBuild" asp-controller="Master">
+			<!--begin::Scroll-->
+			<input type="hidden" asp-for="id_encrypt" />
+			<input type="hidden" asp-for="column_type" />
+
+			<div class="row gx-10 mb-5">
+
+				<!--begin::Col-->
+				<div class=" col-lg-11">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Code </label>&nbsp;
+					@if (_ex == "1")
+					{
+						<small class="text-primary cursor-pointer" onclick="genCode();"><i class="ki-outline ki-arrows-loop text-primary  fs-3"></i> Generate</small>
+					}
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="column_code">
+					</div>
+					<!--end::Input group-->
+				</div>
+
+				<div class=" col-lg-1">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Active </label>
+					<!--begin::Input group-->
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" asp-for="is_active" />
+					</div>
+					<!--end::Input group-->
+				</div>
+
+				<div class=" col-lg-2">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Sequence</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="number" class="form-control" asp-for="column_seq" step='0.01'>
+					</div>
+				</div>
+
+				<div class=" col-lg-10">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Display</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="column_display_text" >
+					</div>
+				</div>
+
+				<div class=" col-lg-6">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Type</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<select class="form-select " data-control="select2" data-placeholder="Select Type" id="ddlType" name="ddlType" onchange="goChange(this);">
+							<option value=""></option>
+							@foreach (var item in template_type)
+							{
+								if (item == Model.column_type)
+								{
+									<option value="@item" selected>@item</option>
+								}else
+								{
+									<option value="@item" >@item</option>
+								}	
+							}
+						</select>
+					</div>
+				</div>
+
+				<div class=" col-lg-5">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Drop down value</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="column_ddl_value" disabled>
+					</div>
+				</div>
+
+				<div class=" col-lg-1">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Required </label>
+					<!--begin::Input group-->
+					<div class="form-check fv-row">
+						<input class="form-check-input" type="checkbox" asp-for="column_is_required" />
+					</div>
+					<!--end::Input group-->
+				</div>
+
+			</div>
+
+			<!--begin::Actions-->
+			<div class="text-center pt-10">
+				<button type="submit" id="kt_submit" class="btn btn-primary">
+					<!--begin::Indicator label-->
+					<span class="indicator-label">Save</span>
+					<!--end::Indicator label-->
+					<!--begin::Indicator progress-->
+					<span class="indicator-progress">
+						Please wait...
+						<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+					</span>
+					<!--end::Indicator progress-->
+				</button>
+				<a asp-action="TemplateBuild" asp-controller="Master" class="btn btn-danger mx-3">Cancel</a>
+			</div>
+			<!--end::Actions-->
+		</form>
+	</div>
+
+</div>
+@section Scripts {
+	<script>
+		$(function () {
+			//debugger
+
+			const form = document.getElementById('myForm');
+			var validator = FormValidation.formValidation(
+				form,
+				{
+					fields: {
+						'column_code': {
+							validators: {
+								notEmpty: {
+									message: '** required'
+								}
+							}
+						},
+						'column_display_text': {
+							validators: {
+								notEmpty: {
+									message: '** required'
+								}
+							}
+						},
+						'ddlType': {
+							validators: {
+								notEmpty: {
+									message: '** required'
+								}
+							}
+						},
+						'column_seq': {
+							validators: {
+								notEmpty: {
+									message: '** required'
+								}
+							}
+						}
+					},
+					plugins: {
+						trigger: new FormValidation.plugins.Trigger(),
+						bootstrap: new FormValidation.plugins.Bootstrap5({
+							rowSelector: '.fv-row',
+							eleInvalidClass: '',
+							eleValidClass: ''
+						})
+					}
+				}
+			);
+
+			// Submit button handler
+			const submitButton = document.getElementById('kt_submit');
+			submitButton.addEventListener('click', function (e) {
+				// Prevent default button action
+				e.preventDefault();
+
+				// Validate form before submit
+				if (validator) {
+					validator.validate().then(function (status) {
+						@* console.log('validated!'); *@
+
+						if (status == 'Valid') {
+
+							// Show loading indication
+							submitButton.setAttribute('data-kt-indicator', 'on');
+
+							// Disable button to avoid multiple click
+							submitButton.disabled = true;
+
+							// Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+							setTimeout(function () {
+								// Remove loading indication
+								submitButton.removeAttribute('data-kt-indicator');
+
+								// Enable button
+								submitButton.disabled = false;
+
+								form.submit(); // Submit form
+							}, 1500);
+						}
+					});
+				}
+			});
+
+
+
+			if ('@_ex' == '1') {
+				$("#column_code").prop("disabled", false);
+
+			} else {
+				$("#column_code").prop("disabled", true);
+				if ('@Model.column_type' == 'dropdown') {
+					$("#column_ddl_value").prop("disabled", false);
+				} else {
+					$("#column_ddl_value").prop("disabled", true);
+				}
+			}
+		});
+
+		function pad2(n) { return n < 10 ? '0' + n : n }
+		function genCode() {
+			var date = new Date();
+			let _gen = date.getFullYear().toString() + pad2(date.getMonth() + 1) + pad2(date.getDate()) + pad2(date.getHours()) + pad2(date.getMinutes()) + pad2(date.getSeconds());
+			$("#column_code").val("TB" + _gen);
+		}
+		function goChange(e){
+			let _obj = $(e).val();
+			$("#column_ddl_value").prop("disabled", _obj != 'dropdown');
+			$("#column_type").val(_obj);
+		}
+	</script>
+}

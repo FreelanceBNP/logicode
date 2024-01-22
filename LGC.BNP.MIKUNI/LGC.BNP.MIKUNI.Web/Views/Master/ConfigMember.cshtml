@@ -1,0 +1,347 @@
+@section HeaderTitle {
+	@ViewData["Title"]
+}
+@{
+	ViewData["Title"] = ViewBag.Title;
+}
+<div class="card">
+	<div class="card-header border-0 pt-6">
+		<div class="card-toolbar">
+			<div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
+				<a class="btn btn-primary  ms-2" onclick="manageData('add')">
+					<i class="ki-duotone ki-magnifier fs-2"></i>Add Config Member
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="card-body py-4">
+		<table class="table table table-bordered gy-5" id="kt_table">
+			<thead>
+				<tr class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
+					<th class="min-w-125px pl-2">No</th>
+					<th class="min-w-125px">Name</th>
+					<th class="min-w-125px">Desciption</th>
+					<th class="min-w-125px">Active</th>
+					<th class="min-w-125px text-center">Actions</th>
+				</tr>
+			</thead>
+			<tbody class="text-gray-600 fw-semibold">
+				
+				
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="modal fade" tabindex="-1" id="manage_data">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title title-manage-item"></h3>
+				<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+					aria-label="Close">
+					<i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+				</div>
+			</div>
+
+			<div class="modal-body">
+                <select class="form-control" data-control="select2" id="emp_name">
+                </select>
+				@* <input type="text" class="form-control mt-2" id="data-to-set" value="" /> *@
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary btn-sm type-set-btn-save" onclick="saveData();">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+@section Scripts {
+	<script>
+		let globalTagMappingList = @Html.Raw(Json.Serialize(Model));
+		let globalTagList = []
+		$(async function () {
+			@* console.log(globalTagMappingList)
+            loadDa
+			initDatatableMain(globalTagMappingList) *@
+			await loadItemMemberConfig()
+			
+		});
+		function initDatatableMain(data) {
+			var dt_invoice_table = $("#kt_table");
+			let dt_invoice_table_datatable = dt_invoice_table.DataTable({
+				destroy: true,
+				data: data,
+				columnDefs: [
+					{
+						targets: 0,
+						className: "text-center",
+						searchable: false,
+						orderable: false,
+						defaultContent: "1",
+					},
+					{
+						targets: 1,
+						data: null,
+						className: "text-left",
+						render: function (data, type, full, meta) {
+							return `<span class="text-primary">${full.name}</span>`;
+						},
+					},
+					{
+						targets: 2,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+                           	return `<span class="text-primary">${full.desciption ? full.desciption : ''}</span>`;
+						},
+					},
+					{
+						targets: 3,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							
+                            let txt = ''
+                            if (full.is_active) {
+                                txt = `<div class="pointer badge badge-light text-success" onclick="setIsAction('0', ${full.employee_id})">Active</div>`
+                            } else {
+                                txt = `<div class="pointer badge badge-light text-danger" onclick="setIsAction('1', ${full.employee_id})">Inactive</div>`
+
+                            }
+							return txt;
+						},
+					},
+					{
+						targets: 4,
+						data: null,
+						className: "text-center",
+						render: function (data, type, full, meta) {
+							let dataBase64decode = base64encode(JSON.stringify(full))
+							let txt = ''
+							txt += `<a href="#" onclick="manageData('edit', '${full.employee_id}', '${dataBase64decode}')" class="menu-link px-3"><i class="ki-outline ki-notepad-edit text-primary fs-3"></i> </a>`
+							txt += `<a href="#" onclick="manageData('delete', '${full.employee_id}')" class="menu-link px-3"><i class="ki-outline ki-trash text-danger fs-3"></i> </a>`
+							return txt;
+						},
+					},
+				],
+				order: [[0, "asc"]],
+				dom:
+					'<"row ms-2 me-3"' +
+					'<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-2"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
+					'<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-2"f<"invoice_status mb-3 mb-md-0">>' +
+					">t" +
+					'<"row mx-2"' +
+					'<"col-sm-12 col-md-6"i>' +
+					'<"col-sm-12 col-md-6"p>' +
+					">",
+				language: {
+					sLengthMenu: "_MENU_",
+					search: "",
+					searchPlaceholder: "Search",
+				},
+				buttons: [
+					{
+						extend: 'excel',
+						text: '<i class="bi bi-file-earmark-spreadsheet me-2 text-white"></i>Excel',
+						className: 'buttons-excel mx-3',
+						exportOptions: {
+							columns: [0, 1, 2, 3],
+						}
+
+					},
+				],
+			});
+			 setTimeout(() => {
+            dt_invoice_table_datatable.on('order.dt search.dt', function () {
+                let i = 1;
+                dt_invoice_table_datatable.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                    this.data(i++);
+                });
+            }).draw();
+        }, 300);
+		}
+		async function saveData(type = '', id = null) {
+			if (type == '') {
+				toastr.error("Cannot Save : Error type");
+				return
+			} 
+			let data = $('#emp_name').val()
+			if (data == '' && type != 'delete') {
+				toastr.error("Please Enter Employee Name");
+				return
+			}
+            let cf = await SweetAlertConfirm('warning', 'ยืนยันการทำรายการ')
+            if (cf) {
+                let obj = {
+                    name: data,
+                    type_request: type,
+                    employee_id: id
+                }
+                let res = await new Promise((resolve)=> {
+                    $.ajax({
+                        cache: false,
+                        async: true,
+                        type: "POST",
+                        url: "@Url.Action("SetVIPData", "Master")",
+                        data: obj,
+                        success: function (data) {
+                                @* console.log(data) *@
+                            if (data.status == "success") {
+                                toastr.success("Save Success");
+                                loadItemMemberConfig('main')
+                                //set modal hide
+                                $('#manage_data').modal('hide');
+
+                            } else {
+                                toastr.error("Something went wrong : " + data.message);
+                            }
+                        },
+                        error: function (err) {
+                            swal.close();
+                            toastr.error("Something went wrong");
+                        },
+                        complete: function (data) {
+
+                        }
+
+                    });
+                })
+                $('#manage_data').modal('hide');
+            }
+		}
+		async function manageData(type = null, id = null, detail = null) {
+			if (type == 'add') {
+                await loadMemberAll()
+				$('.title-manage-item').html('Add Name')
+				$('.type-set-btn-save').attr('onclick', `saveData('add')`)
+				$('#manage_data').modal('show');
+			} else if (type == 'edit') {
+                await loadMemberAll()
+                $('.title-manage-item').html(`Edit Name <span class="fw-bold">${id}</span>`)
+                $('.type-set-btn-save').attr('onclick', `saveData('edit', '${id}')`)
+                let jsonParse = JSON.parse(base64decode(detail))
+                $('#emp_name').val(jsonParse.name).trigger('change')
+                $('#manage_data').modal('show');
+			} else if (type == 'delete') {
+				@* let cf = await SweetAlertConfirm(type = 'warning', title = 'ยืนยันการทำรายการ')
+				if (cf) { *@
+					await saveData('delete', `${id}`)
+				@* } *@
+			}
+			// modal open
+			
+		}
+        async function loadMemberAll() {
+            let res = await new Promise((resolve)=> {
+                $.ajax({
+                    cache: false,
+                    async: true,
+                    type: "POST",
+                    url: "@Url.Action("getItemMaster", "Master")",
+                    data: {},
+                    success: function (data) {
+                        if (data.status == "success") {
+                            resolve(data.data)
+                           
+                        } else {
+                            resolve([])
+                            toastr.error("Something went wrong : " + data.message);
+
+                        }
+                        
+                    },
+                    error: function (err) {
+                        resolve('error')
+                        swal.close();
+                        toastr.error("Something went wrong");
+                      
+                    }
+                });
+            })
+            if (res.length > 0 ) {
+                renderOptionGrpEmpName(res)
+            }
+        }
+        function renderOptionGrpEmpName (data) {
+            let newArr = []
+            for (let item of data) {
+                if (item.emp_name == null) continue
+                let posDupp = newArr.findIndex(res => res.emp_name == item.emp_name )
+                if (posDupp == -1) {
+                    newArr.push(item)
+                }
+            }
+            let txt = ''
+            txt += `<option value="">-- Select --</option>`
+            newArr.forEach((item, index) => {
+                txt += `<option value="${item.emp_name}">${item.emp_name}</option>`
+            })
+            $('#emp_name').html(txt).trigger('change')
+        }
+        async function setIsAction(status, employee_id) {
+            let cf = await SweetAlertConfirm(type = 'warning', title = 'ยืนยันการทำรายการ')
+            if (cf) {
+                let res = await new Promise((resolve)=> {
+                    $.ajax({
+                        cache: false,
+                        async: true,
+                        type: "POST",
+                        url: "@Url.Action("SetActiveDataMember", "Master")",
+                        data: {status: status, employee_id: employee_id},
+                        success: function (data) {
+                                @* console.log(data) *@
+                            if (data.status == "success") {
+                                loadItemMemberConfig(data.data)
+                            } else {
+                                toastr.error("Something went wrong : " + data.message);
+                            }
+                        },
+                        error: function (err) {
+                            swal.close();
+                            toastr.error("Something went wrong");
+                        },
+                        complete: function (data) {
+
+                        }
+
+                    });
+                })
+            }
+        }
+		async function loadItemMemberConfig(type = 'main') {
+			let res = await new Promise((resolve)=> {
+				$.ajax({
+					cache: false,
+					async: true,
+					type: "POST",
+					url: "@Url.Action("GetVIPData", "Master")",
+					data: {},
+					success: function (data) {
+							@* console.log(data) *@
+						if (data.status == "success") {
+							initDatatableMain(data.data)
+						} else {
+							toastr.error("Something went wrong : " + data.message);
+						}
+					},
+					error: function (err) {
+						swal.close();
+						toastr.error("Something went wrong");
+					},
+					complete: function (data) {
+
+					}
+
+				});
+			})
+			
+		}
+
+	</script>
+}
+<style>
+    .pointer {
+        cursor: pointer;
+    }
+</style>

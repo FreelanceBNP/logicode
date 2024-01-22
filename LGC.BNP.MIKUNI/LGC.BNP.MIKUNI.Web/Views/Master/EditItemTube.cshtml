@@ -1,0 +1,291 @@
+﻿@model MasterItem 
+@{
+	ViewData["Title"] = "Add / Edit Item Master";
+	string _ex = (Model.mas_item_id == 0 ? "1" : "0");
+}
+@section HeaderTitle {
+	@ViewData["Title"]
+}
+
+<div class="card card-bordered">
+	<div class="card-body">
+		<form id="myForm" class="form" asp-action="EditItemMaster" asp-controller="Master">
+			<!--begin::Scroll-->
+			@* <input type="hidden" asp-for="id_encrypt" /> *@
+			@* <div class="row gx-10 mb-5">
+				<div class=" col-lg-10">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Code </label>&nbsp;
+					@if (_ex == "1")
+					{
+						<small class="text-primary cursor-pointer" onclick="genCode();"><i class="ki-outline ki-arrows-loop text-primary  fs-3"></i> Generate</small>
+					}
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="itemtube_code">
+					</div>
+				</div>
+
+				<div class=" col-lg-2">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Active </label>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" asp-for="is_active" />
+					</div>
+				</div>
+
+				<div class=" col-lg-12">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Description</label>
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="itemtube_description">
+					</div>
+				</div>
+			</div> *@
+			<div class="row gx-10 mb-5">
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Title </label>
+					@if (_ex == "1")
+					{
+						<small class="text-primary cursor-pointer" onclick="genCodeTitle();"><i class="ki-outline ki-arrows-loop text-primary  fs-3"></i> Generate</small>
+					}
+					<div class="">
+						<input type="text" class="form-control" asp-for="title">
+					</div>
+				</div>
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Fix Asset </label>
+					@if (_ex == "1")
+					{
+						<small class="text-primary cursor-pointer" onclick="genCode();"><i class="ki-outline ki-arrows-loop text-primary  fs-3"></i> Generate</small>
+					}
+					<div class="">
+						<input type="text" class="form-control" asp-for="fix_asset">
+					</div>
+				</div>
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Top No </label>
+					<div class="">
+						<input type="text" class="form-control" asp-for="top_no">
+					</div>
+				</div>
+			</div>
+			<div class="row gx-10 mb-5">
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Details </label>
+					<div class="">
+						<input type="text" class="form-control" asp-for="details">
+					</div>
+				</div>
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Computer Type </label>
+					<div class="">
+						<select class="form-control" name="" id=""  asp-for="computer_type">
+							<option value="">Please Enter Computer Type</option>
+							@if (Model.computer_type_list.Count() > 0) {
+								foreach (var item in Model.computer_type_list) {
+									<option value="@item.computer_type_id">@item.computer_type</option>
+								}
+							}
+						</select>
+					</div>
+				</div>
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Computer Brand </label>
+					<div class="">
+						<select class="form-control" name="" id=""  asp-for="computer_brand">
+							<option value="">Please Enter Brand Type</option>
+							@if (Model.computer_brand_list.Count() > 0) {
+								foreach (var item in Model.computer_brand_list) {
+									<option value="@item.computer_brand_id">@item.computer_brand</option>
+								}
+							}
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="row gx-10 mb-5">
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Serial Number </label>
+					<div class="">
+						<input type="text" class="form-control" asp-for="serial_number">
+					</div>
+				</div>
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">MIT AD User </label>
+					<div class="">
+						<input type="text" class="form-control" asp-for="mit_ad_user">
+					</div>
+				</div>
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Location </label>
+					<div class="">
+						<input type="text" class="form-control" asp-for="location">
+					</div>
+				</div>
+			</div>
+			<div class="row gx-10 mb-5">
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Location Sub </label>
+					<div class="">
+						<input type="text" class="form-control" asp-for="location_sub">
+					</div>
+				</div>
+			</div>
+			<div class="row gx-10 mb-5">
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">MIT Name </label>
+					<div class="">
+						<input type="text" class="form-control" asp-for="mit_name">
+					</div>
+				</div>
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Emp Name </label>
+					<div class="">
+						<input type="text" class="form-control" asp-for="emp_name">
+					</div>
+				</div>
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Section Code </label>
+					<div class="">
+						<input type="text" class="form-control" asp-for="section_code">
+					</div>
+				</div>
+			</div>
+			<div class="row gx-10 mb-5">
+				<div class=" col-lg-3">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Description </label>
+					<div class="">
+						<input type="text" class="form-control" asp-for="description">
+					</div>
+				</div>
+			</div>
+		
+			<!--begin::Actions-->
+			<div class="text-center pt-10">
+				<button type="submit" id="kt_submit" class="btn btn-primary">
+					<!--begin::Indicator label-->
+					<span class="indicator-label">Save</span>
+					<!--end::Indicator label-->
+					<!--begin::Indicator progress-->
+					<span class="indicator-progress">
+						Please wait...
+						<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+					</span>
+					<!--end::Indicator progress-->
+				</button>
+				<a asp-action="ItemMaster" asp-controller="Master" class="btn btn-danger mx-3">Cancel</a>
+			</div>
+			<!--end::Actions-->
+		</form>
+	</div>
+
+</div>
+@section Scripts {
+	<script>
+		// Define form element
+		const form = document.getElementById('myForm');
+		var validator = FormValidation.formValidation(
+			form,
+			{
+				fields: {
+					'title': {
+						validators: {
+							notEmpty: {
+								message: '** required'
+							}
+						}
+					},
+					'fix_asset': {
+						validators: {
+							notEmpty: {
+								message: '** required'
+							}
+						}
+					},
+					'computer_type': {
+						validators: {
+							notEmpty: {
+								message: '** required'
+							}
+						}
+					},
+					'computer_brand': {
+						validators: {
+							notEmpty: {
+								message: '** required'
+							}
+						}
+					},
+					'serial_number': {
+						validators: {
+							notEmpty: {
+								message: '** required'
+							}
+						}
+					}
+				},
+				plugins: {
+					trigger: new FormValidation.plugins.Trigger(),
+					bootstrap: new FormValidation.plugins.Bootstrap5({
+						rowSelector: '.fv-row',
+						eleInvalidClass: '',
+						eleValidClass: ''
+					})
+				}
+			}
+		);
+
+		// Submit button handler
+		const submitButton = document.getElementById('kt_submit');
+		submitButton.addEventListener('click', function (e) {
+			// Prevent default button action
+			e.preventDefault();
+	
+			// Validate form before submit
+			if (validator) {
+				validator.validate().then(function (status) {
+					@* console.log('validated!'); *@
+
+					if (status == 'Valid') {
+
+						// Show loading indication
+						submitButton.setAttribute('data-kt-indicator', 'on');
+
+						// Disable button to avoid multiple click
+						submitButton.disabled = true;
+
+						// Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+						setTimeout(function () {
+							// Remove loading indication
+							submitButton.removeAttribute('data-kt-indicator');
+
+							// Enable button
+							submitButton.disabled = false;
+
+							form.submit(); // Submit form
+						}, 1500);
+					}
+				});
+			}
+		});
+
+		$(function () {
+			@* debugger
+			if ('@_ex' == '1') {
+				$("#itemtube_code").prop("disabled", false);
+			} else {
+				$("#itemtube_code").prop("disabled", true);
+			} *@
+		});
+
+		function pad2(n) { return n < 10 ? '0' + n : n }
+		function genCode() {
+			var date = new Date();
+			let _gen = date.getFullYear().toString() + pad2(date.getMonth() + 1) + pad2(date.getDate()) + pad2(date.getHours()) + pad2(date.getMinutes()) + pad2(date.getSeconds());
+			$("#fix_asset").val("CH-" + _gen);
+		}
+		function genCodeTitle() {
+			var date = new Date();
+			let _gen = date.getFullYear().toString() + pad2(date.getMonth() + 1) + pad2(date.getDate()) + pad2(date.getHours()) + pad2(date.getMinutes()) + pad2(date.getSeconds());
+			$("#title").val("DMIT" + _gen);
+		}
+
+	</script>
+}

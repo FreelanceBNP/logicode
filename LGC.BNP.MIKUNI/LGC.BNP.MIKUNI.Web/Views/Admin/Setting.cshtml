@@ -1,0 +1,168 @@
+﻿@{
+	ViewData["Title"] = "Admin Setting";
+	var _allow = ViewBag.AllowDays as string;
+	var FromAddress = ViewBag.FromAddress as string;
+	var FromName = ViewBag.FromName as string;
+	var FromPassword = ViewBag.FromPassword as string;
+	var Host = ViewBag.Host as string;
+	var Port = ViewBag.Port as string;
+	var txtstring = ViewBag.txtstring as string;
+	var decryptor = ViewBag.decryptor as string;
+	var TimeSaveTag = ViewBag.TimeSaveTag as string;
+}
+@section HeaderTitle {
+	@ViewData["Title"]
+}
+<div class="card card-bordered">
+	<div class="card-body">
+		<!--begin::Scroll-->
+		<div class="row gx-10 mb-5">
+			<div class=" col-lg-12">
+				<label class="form-label fs-6 fw-bold text-gray-700 mb-3 ">Set Allow Days (Default) @txtstring</label>
+				<!--begin::Input group-->
+				<div class="mb-5 fv-row">
+					<input type="number" class="form-control w-100 mt-2" value="@_allow" id="txtAllowDays" />
+				</div>
+				<!--end::Input group-->
+			</div>
+
+		</div>
+		<div class="row gx-10 mb-5">
+			<div class=" col-lg-6">
+				<label class="form-label fs-6 fw-bold text-gray-700 mb-3 ">FromAddress | @decryptor</label>
+				<!--begin::Input group-->
+				<div class="mb-5 fv-row">
+					<input type="text" class="form-control w-100 mt-2" value="@FromAddress" id="txtFromAddress" />
+				</div>
+				<!--end::Input group-->
+			</div>
+			<div class=" col-lg-6">
+				<label class="form-label fs-6 fw-bold text-gray-700 mb-3 ">FromName</label>
+				<!--begin::Input group-->
+				<div class="mb-5 fv-row">
+					<input type="text" class="form-control w-100 mt-2" value="@FromName" id="txtFromName" />
+				</div>
+				<!--end::Input group-->
+			</div>
+		</div>
+		<div class="row gx-10 mb-5">
+			<div class=" col-lg-6">
+				<label class="form-label fs-6 fw-bold text-gray-700 mb-3 ">FromPassword</label>
+				<!--begin::Input group-->
+				<div class="mb-5 fv-row">
+					<input type="text" class="form-control w-100 mt-2" value="@FromPassword" id="txtPassword" />
+				</div>
+				<!--end::Input group-->
+			</div>
+			<div class=" col-lg-6">
+				<label class="form-label fs-6 fw-bold text-gray-700 mb-3 ">Host</label>
+				<!--begin::Input group-->
+				<div class="mb-5 fv-row">
+					<input type="text" class="form-control w-100 mt-2" value="@Host" id="txtHost" />
+				</div>
+				<!--end::Input group-->
+			</div>
+		</div>
+		<div class="row gx-10 mb-5">
+			<div class=" col-lg-6">
+				<label class="form-label fs-6 fw-bold text-gray-700 mb-3 ">Port</label>
+				<!--begin::Input group-->
+				<div class="mb-5 fv-row">
+					<input type="text" class="form-control w-100 mt-2" value="@Port" id="txtPort" />
+				</div>
+				<!--end::Input group-->
+			</div>
+		</div>
+		<div class="row gx-10 mb-5">
+			<div class=" col-lg-6">
+				<label class="form-label fs-6 fw-bold text-gray-700 mb-3 ">TimeSaveTag</label>
+				<!--begin::Input group-->
+				<div class="mb-5 fv-row">
+					<input type="text" class="form-control w-100 mt-2" value="@TimeSaveTag" id="txtTimeSaveTag" />
+				</div>
+				<!--end::Input group-->
+			</div>
+		</div>
+
+		<!--begin::Actions-->
+		<div class="text-center pt-10">
+			<button type="button" id="kt_submit" class="btn btn-primary" onclick="goSave();">
+				Save
+			</button>
+		</div>
+		<!--end::Actions-->
+	</div>
+</div>
+@section Scripts {
+	<script>
+	
+		$(function () {
+		
+
+		});
+
+		function goSave() {
+			let txtFromAddress = $('#txtFromAddress').val()
+			, txtFromName = $('#txtFromName').val()
+			, txtPassword = $('#txtPassword').val()
+			, txtHost = $('#txtHost').val()
+			, txtPort = $('#txtPort').val()
+			, txt = $("#txtAllowDays").val()
+			, TimeSaveTag = $("#txtTimeSaveTag").val()
+			let obj = {
+				FromAddress: txtFromAddress,
+				FromName: txtFromName,
+				FromPassword: txtPassword,
+				Host: txtHost,
+				Port: txtPort,
+				text: txt,
+				TimeSaveTag: TimeSaveTag
+			}
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "Do you want to Save Allow Days (Default) ?",
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Confirm',
+				customClass: {
+					confirmButton: "btn btn-primary",
+					cancelButton: "btn btn-danger"
+				},
+				buttonsStyling: false,
+			}).then(function (result) {
+				if (result.value) {
+
+					$.ajax({
+						cache: false,
+						async: true,
+						type: "POST",
+						url: "@Url.Action("SaveAllowDays", "Admin")",
+						data: obj,
+						success: function (data) {
+							if (data.status == "success") {
+
+								swal.close();
+								toastr.success("Save  Allow Days Success");
+							} else {
+								swal.close();
+								toastr.error("Something went wrong");
+							}
+						},
+						error: function (err) {
+							swal.close();
+							toastr.error("Something went wrong");
+						},
+						complete: function (data) {
+
+						}
+
+					});
+
+
+				}
+			})
+
+		}
+
+	</script>
+}

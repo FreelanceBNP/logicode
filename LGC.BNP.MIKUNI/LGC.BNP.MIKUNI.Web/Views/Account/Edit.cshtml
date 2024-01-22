@@ -1,0 +1,442 @@
+﻿@model UserData
+@{
+	ViewData["Title"] = "Add / Edit User";
+}
+@section HeaderTitle {
+	@ViewData["Title"]
+}
+
+<style>
+	.image-input-placeholder {
+		background-image: url('/assets/media/avatars/blank.png');
+	}
+
+	[data-bs-theme="dark"] .image-input-placeholder {
+		background-image: url('/assets/media/avatars/blank.png');
+	}</style>
+<div class="card card-bordered">
+	<div class="card-body">
+		<form id="myForm" class="form" asp-action="Edit" asp-controller="Account">
+			<!--begin::Scroll-->
+			<input type="hidden" asp-for="role_string" />
+			<input type="hidden" asp-for="password" />
+			<input type="hidden" asp-for="id_encrypt" />
+			<input type="hidden" asp-for="profile_picture" />
+			<input type="hidden" asp-for="change_pass" />
+			<div class="row gx-10 mb-5">
+
+				<!--begin::Col-->
+				<div class=" col-lg-6">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Username </label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="username">
+					</div>
+					<!--end::Input group-->
+				</div>
+				<div class=" col-lg-4">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Email </label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="email">
+					</div>
+					<!--end::Input group-->
+				</div>
+
+				<div class=" col-lg-2 mt-2">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3">Active </label>
+					<!--begin::Input group-->
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" asp-for="is_active" />
+					</div>
+					<!--end::Input group-->
+				</div>
+
+				<div class="fv-row col-lg-6">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Pasword </label>&nbsp;&nbsp;<small class="text-danger">Leave blank if you do not need to changed.</small>
+					<!--begin::Input group-->
+					<div class="mb-5">
+						<input type="password" class="form-control" id="text-password">
+					</div>
+					<!--end::Input group-->
+				</div>
+
+				<div class="fv-row col-lg-6">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Confirm Password</label>
+					<!--begin::Input group-->
+					<div class="mb-5">
+						<input type="password" class="form-control" id="confirm-password">
+					</div>
+					<!--end::Input group-->
+				</div>
+
+				<!--end::Col-->
+
+				<div class="col-lg-2">
+					<!--begin::Label-->
+					<label class="d-block fw-semibold fs-6 mb-5">Profile Picture</label>
+					<!--end::Label-->
+					<!--begin::Image input-->
+					<div class="image-input image-input-outline image-input-placeholder" data-kt-image-input="true">
+						<!--begin::Preview existing avatar-->
+						<div class="image-input-wrapper w-125px h-125px" style="background-image: url('@Model.profile_picture');"></div>
+						<!--end::Preview existing avatar-->
+						<!--begin::Label-->
+						<label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
+							<i class="ki-duotone ki-pencil fs-7">
+								<span class="path1"></span>
+								<span class="path2"></span>
+							</i>
+							<!--begin::Inputs-->
+							<input type="file" id="myfile" accept=".png, .jpg, .jpeg" />
+							<input type="hidden" name="avatar_remove" />
+							<!--end::Inputs-->
+						</label>
+						<!--end::Label-->
+						<!--begin::Cancel-->
+						<span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+							<i class="ki-duotone ki-cross fs-2">
+								<span class="path1"></span>
+								<span class="path2"></span>
+							</i>
+						</span>
+						<!--end::Cancel-->
+						<!--begin::Remove-->
+						<span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar" onclick="goRemoveImg();">
+							<i class="ki-duotone ki-cross fs-2">
+								<span class="path1"></span>
+								<span class="path2"></span>
+							</i>
+						</span>
+						<!--end::Remove-->
+					</div>
+					<!--end::Image input-->
+					<!--begin::Hint-->
+					<div class="form-text">Allowed file types: png, jpg, jpeg.</div>
+					<!--end::Hint-->
+				</div>
+
+				<!--begin::Col-->
+				<div class="col-lg-5">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">First Name</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="firstname">
+					</div>
+					<!--end::Input group-->
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Position</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control " asp-for="position">
+					</div>
+					<!--end::Input group-->
+				</div>
+				<!--end::Col-->
+				<!--begin::Col-->
+				<div class="col-lg-5">
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Last Name</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="lastname">
+					</div>
+					<!--end::Input group-->
+					<label class="form-label fs-6 fw-bold text-gray-700 mb-3 required">Department</label>
+					<!--begin::Input group-->
+					<div class="mb-5 fv-row">
+						<input type="text" class="form-control" asp-for="department">
+					</div>
+					<!--end::Input group-->
+				</div>
+				<!--end::Col-->
+
+			</div>
+
+				<!--begin::Input group-->
+				<div class="mb-5">
+					<!--begin::Label-->
+					<label class="required fw-semibold fs-6 mb-5">Role</label>
+					<!--end::Label-->
+					<!--begin::Roles-->
+					<!--begin::Input row-->
+					<div class="d-flex fv-row">
+						<!--begin::Radio-->
+						<div class="form-check form-check-custom form-check-solid">
+							<!--begin::Input-->
+							@if (Model.is_admin)
+							{
+							<input class="form-check-input me-3" name="user_role" type="radio" value="0" id="kt_modal_update_role_option_0" checked />
+							}
+							else
+							{
+							<input class="form-check-input me-3" name="user_role" type="radio" value="0" id="kt_modal_update_role_option_0" />
+							}
+							<!--end::Input-->
+							<!--begin::Label-->
+							<label class="form-check-label" for="kt_modal_update_role_option_0">
+								<div class="fw-bold text-gray-800">Administrator</div>
+								<div class="text-gray-600">Best for business owners and company administrators</div>
+							</label>
+							<!--end::Label-->
+						</div>
+						<!--end::Radio-->
+					</div>
+					<!--end::Input row-->
+					<div class='separator separator-dashed my-5'></div>
+					<!--begin::Input row-->
+					<div class="d-flex fv-row">
+						<!--begin::Radio-->
+						<div class="form-check form-check-custom form-check-solid">
+							<!--begin::Input-->
+							@if (Model.is_staff)
+							{
+								<input class="form-check-input me-3" name="user_role" type="radio" value="1" id="kt_modal_update_role_option_1" checked />
+							}
+							else
+							{
+								<input class="form-check-input me-3" name="user_role" type="radio" value="1" id="kt_modal_update_role_option_1" />
+							}
+							<!--end::Input-->
+							<!--begin::Label-->
+							<label class="form-check-label" for="kt_modal_update_role_option_1">
+								<div class="fw-bold text-gray-800">Staff</div>
+								<div class="text-gray-600">Best for developers or people primarily using the API</div>
+							</label>
+							<!--end::Label-->
+						</div>
+						<!--end::Radio-->
+					</div>
+					<!--end::Input row-->
+					<div class='separator separator-dashed my-5'></div>
+					<!--begin::Input row-->
+					<div class="d-flex fv-row">
+						<!--begin::Radio-->
+						<div class="form-check form-check-custom form-check-solid">
+							<!--begin::Input-->
+							@if (Model.is_reporter)
+							{
+								<input class="form-check-input me-3" name="user_role" type="radio" value="2" id="kt_modal_update_role_option_2" checked />
+							}
+							else
+							{
+								<input class="form-check-input me-3" name="user_role" type="radio" value="2" id="kt_modal_update_role_option_2" />
+							}
+							<!--end::Input-->
+							<!--begin::Label-->
+							<label class="form-check-label" for="kt_modal_update_role_option_2">
+								<div class="fw-bold text-gray-800">Reporter</div>
+								<div class="text-gray-600">Best for people who need full access to analytics data, but don't need to update business settings</div>
+							</label>
+							<!--end::Label-->
+						</div>
+						<!--end::Radio-->
+					</div>
+					<!--end::Input row-->
+					
+					<!--end::Roles-->
+				</div>
+				<!--end::Input group-->
+		
+			<!--end::Scroll-->
+			<!--begin::Actions-->
+			<div class="text-center pt-10">
+				<button type="submit" id="kt_submit" class="btn btn-primary">
+					<!--begin::Indicator label-->
+					<span class="indicator-label">Save</span>
+					<!--end::Indicator label-->
+					<!--begin::Indicator progress-->
+					<span class="indicator-progress">
+						Please wait...
+						<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+					</span>
+					<!--end::Indicator progress-->
+				</button>
+				<a  asp-action="Overview" asp-controller="Account" class="btn btn-danger mx-3">Cancel</a>
+			</div>
+			<!--end::Actions-->
+		</form>
+	</div>
+	
+</div>
+@section Scripts {
+	<script>
+		// Define form element
+		const form = document.getElementById('myForm');
+		var validator = FormValidation.formValidation(
+			form,
+			{
+				fields: {
+					'username': {
+						validators: {
+							notEmpty: {
+								message: '** required'
+							}
+						}
+					},
+					'firstname': {
+						validators: {
+							notEmpty: {
+								message: '** required'
+							}
+						}
+					},
+					'lastname': {
+						validators: {
+							notEmpty: {
+								message: '** required'
+							}
+						}
+					},
+					'position': {
+						validators: {
+							notEmpty: {
+								message: '** required'
+							}
+						}
+					},
+					'department': {
+						validators: {
+							notEmpty: {
+								message: '** required'
+							}
+						}
+					}
+				},
+				plugins: {
+					trigger: new FormValidation.plugins.Trigger(),
+					bootstrap: new FormValidation.plugins.Bootstrap5({
+						rowSelector: '.fv-row',
+						eleInvalidClass: '',
+						eleValidClass: ''
+					})
+				}
+			}
+		);
+		
+		// Submit button handler
+		const submitButton = document.getElementById('kt_submit');
+		submitButton.addEventListener('click', function (e) {
+			// Prevent default button action
+			e.preventDefault();
+			let _role = '';
+			$("input[name=user_role]").each(function () {
+				debugger
+				if ($(this).is(":checked")) {
+					_role = $(this).val();
+				}
+			});
+			$("#role_string").val(_role);
+
+			// Validate form before submit
+			if (validator) {
+				validator.validate().then(function (status) {
+					@* console.log('validated!'); *@
+
+					if (status == 'Valid') {
+
+						var _pass = $("#text-password").val();
+						var _con = $("#confirm-password").val();
+						debugger
+						if ('@Model.id' == '0') {
+							if (_pass == '' || _pass == undefined) {
+								toastr.error("Please entry Password!");
+								return false;
+							}
+							if (_con == '' || _con == undefined) {
+								toastr.error("Please entry Confirm Pasword!");
+								return false;
+							}
+							if (_pass != _con) {
+								toastr.error("Please entry Confirm password not match with Password .. try again!");
+								return false;
+							}
+						} else {
+							if (_pass != '' && _con == '') {
+								toastr.error("Please entry Confirm Pasword!");
+								return false;
+							}
+							if (_pass == '' && _con != '') {
+								toastr.error("Please entry Password!");
+								return false;
+							}
+							if (_pass != _con) {
+								toastr.error("Please entry Confirm password not match with Password .. try again!");
+								return false;
+							}
+						}
+
+						if (_pass != '') {
+							$("#change_pass").val(true);
+							$("#password").val($("#text-password").val());
+						}
+
+						// Show loading indication
+						submitButton.setAttribute('data-kt-indicator', 'on');
+
+						// Disable button to avoid multiple click
+						submitButton.disabled = true;
+
+						// Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+						setTimeout(function () {
+							// Remove loading indication
+							submitButton.removeAttribute('data-kt-indicator');
+
+							// Enable button
+							submitButton.disabled = false;
+
+							// Show popup confirmation
+							// Swal.fire({
+							// 	text: "Form has been successfully submitted!",
+							// 	icon: "success",
+							// 	buttonsStyling: false,
+							// 	confirmButtonText: "Ok, got it!",
+							// 	customClass: {
+							// 		confirmButton: "btn btn-primary"
+							// 	}
+							// });
+
+							form.submit(); // Submit form
+						}, 1500);
+					}
+				});
+			}
+		});
+
+		$(function () {
+			const input = document.getElementById("myfile");
+
+			$("#myfile").on("change", function (e) {
+				//debugger
+				uploadImage(e);
+			});
+
+
+			const convertBase64 = (file) => {
+				return new Promise((resolve, reject) => {
+					const fileReader = new FileReader();
+					fileReader.readAsDataURL(file);
+
+					fileReader.onload = () => {
+						resolve(fileReader.result);
+					};
+
+					fileReader.onerror = (error) => {
+						reject(error);
+					};
+				});
+			};
+
+			const uploadImage = async (event) => {
+				const file = event.target.files[0];
+				const base64 = await convertBase64(file);
+				@* console.log(base64); *@
+				$("#profile_picture").val(base64);
+			};
+
+		});
+
+		function goRemoveImg() {
+			$("#profile_picture").val("");
+		}
+	
+	</script>
+}

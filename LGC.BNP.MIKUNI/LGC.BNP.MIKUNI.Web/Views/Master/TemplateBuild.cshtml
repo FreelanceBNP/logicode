@@ -1,0 +1,167 @@
+﻿@model List<TemplateBuildData>
+@section HeaderTitle {
+	@ViewData["Title"]
+}
+@{
+	ViewData["Title"] = "Template Build";
+}
+<!--begin::Card-->
+<div class="card">
+	<!--begin::Card header-->
+	<div class="card-header border-0 pt-6">
+		<!--begin::Card toolbar-->
+		<div class="card-toolbar">
+			<!--begin::Toolbar-->
+			<div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
+				<!--begin::Add user-->
+				<a class="btn btn-primary" asp-action="EditTemplateBuild" asp-controller="Master">
+					<i class="ki-duotone ki-plus fs-2"></i>Add Template Build
+				</a>
+				<!--end::Add user-->
+			</div>
+			<!--end::Toolbar-->
+		</div>
+		<!--end::Card toolbar-->
+	</div>
+	<!--end::Card header-->
+	<!--begin::Card body-->
+	<div class="card-body py-4">
+		<!--begin::Table-->
+		<table class="table table table-bordered gy-5" id="kt_table">
+			<thead>
+				<tr class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
+					<th class="min-w-125px pl-2">Code</th>
+					<th class="min-w-125px">Sequence</th>
+					<th class="min-w-125px">Display</th>
+					<th class="min-w-125px">Type</th>
+					<th class="min-w-125px">Value</th>
+					<th class="min-w-125px">Required</th>
+					<th class="min-w-125px">Status</th>
+					<th class="min-w-125px text-center">Actions</th>
+				</tr>
+			</thead>
+			<tbody class="text-gray-600 fw-semibold">
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td class="d-flex align-items-center">
+							<!--begin:: Avatar -->
+							<a asp-action="EditTemplateBuild" asp-controller="Master" asp-route-id_encrypt="@item.id_encrypt">@item.column_code</a>
+						</td>
+						<td>
+							<div class="d-flex flex-column">
+								<span>@item.column_seq.ToString("N2")</span>
+							</div>
+						</td>
+						<td>
+							<div class="d-flex flex-column">
+								<span>@item.column_display_text</span>
+							</div>
+						</td>
+						<td>
+							<div class="d-flex flex-column">
+								<span>@item.column_type</span>
+							</div>
+						</td>
+						<td>
+							<div class="d-flex flex-column">
+								<span>@item.column_ddl_value</span>
+							</div>
+						</td>
+						<td>
+							@if (item.column_is_required)
+							{
+									<code class="text-danger">Required</code>
+							}
+						</td>
+						<td>
+							@if (item.is_active)
+							{
+								<div class="badge badge-light text-success">Yes</div>
+							}
+							else
+							{
+								<div class="badge badge-light text-danger">No</div>
+							}
+						</td>
+						<td class="text-center">
+							<a asp-action="EditTemplateBuild" asp-controller="Master" asp-route-id_encrypt="@item.id_encrypt" class="menu-link px-3"><i class="ki-outline ki-wrench text-primary fs-3"></i> </a>
+							<a href="#" onclick="goDelete('@item.id_encrypt', '@item.column_code')" class="menu-link px-3"><i class="ki-outline ki-trash text-danger fs-3"></i> </a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<!--end::Table-->
+	</div>
+	<!--end::Card body-->
+</div>
+<!--end::Card-->
+@section Scripts {
+	<script>
+		$(function () {
+			$("#kt_table").DataTable({
+				order: [[1, 'asc']],
+				"language": {
+					"lengthMenu": "Show _MENU_",
+				},
+				"dom":
+					"<'row'" +
+					"<'col-sm-6 d-flex align-items-center justify-conten-start'l>" +
+					"<'col-sm-6 d-flex align-items-center justify-content-end'f>" +
+					">" +
+
+					"<'table-responsive'tr>" +
+
+					"<'row'" +
+					"<'col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'i>" +
+					"<'col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'p>" +
+					">"
+			});
+		});
+
+		function goDelete(param, param_text) {
+
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "Do you want to Delete : " + param_text + " ?",
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Confirm',
+				customClass: {
+					confirmButton: "btn btn-primary",
+					cancelButton: "btn btn-danger"
+				},
+				buttonsStyling: false,
+			}).then(function (result) {
+				if (result.value) {
+
+					$.ajax({
+						cache: false,
+						async: true,
+						type: "POST",
+						url: "@Url.Action("DeleteTemplateBuild", "Master")",
+						data: { id_encrypt: param },
+						success: function (data) {
+							if (data.status == "success") {
+								location.reload();
+							} else {
+								toastr.error("Something went wrong : " + data.message);
+							}
+						},
+						error: function (err) {
+							swal.close();
+							toastr.error("Something went wrong");
+						},
+						complete: function (data) {
+
+						}
+
+					});
+				}
+			});
+
+		}
+
+	</script>
+}
