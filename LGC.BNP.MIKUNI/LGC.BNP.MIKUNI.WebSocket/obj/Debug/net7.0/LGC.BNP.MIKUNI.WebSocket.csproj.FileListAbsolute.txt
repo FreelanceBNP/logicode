@@ -31,3 +31,4 @@ D:\WorkOut\logicode\LGC.BNP.MIKUNI\LGC.BNP.MIKUNI.WebSocket\obj\Debug\net7.0\ref
 D:\WorkOut\logicode\LGC.BNP.MIKUNI\LGC.BNP.MIKUNI.WebSocket\obj\Debug\net7.0\LGC.BNP.MIKUNI.WebSocket.pdb
 D:\WorkOut\logicode\LGC.BNP.MIKUNI\LGC.BNP.MIKUNI.WebSocket\obj\Debug\net7.0\LGC.BNP.MIKUNI.WebSocket.genruntimeconfig.cache
 D:\WorkOut\logicode\LGC.BNP.MIKUNI\LGC.BNP.MIKUNI.WebSocket\obj\Debug\net7.0\ref\LGC.BNP.MIKUNI.WebSocket.dll
+D:\WorkOut\logicode\LGC.BNP.MIKUNI\LGC.BNP.MIKUNI.WebSocket\obj\Debug\net7.0\LGC.BNP.MIKUNI.WebSocket.sourcelink.json

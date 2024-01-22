@@ -9025,52 +9025,20 @@
       "PackagePath": "staticwebassets\\fonts\\webfont\\chulabhornlikittext-regular.woff2"
     },
     {
-      "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\CRI-LOGO.png",
-      "PackagePath": "staticwebassets\\img\\CRI-LOGO.png"
-    },
-    {
-      "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\bg.jpg",
-      "PackagePath": "staticwebassets\\img\\bg.jpg"
+      "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\Logicode-Logo.png",
+      "PackagePath": "staticwebassets\\img\\Logicode-Logo.png"
     },
     {
       "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\logo-mikuni.png",
       "PackagePath": "staticwebassets\\img\\logo-mikuni.png"
     },
     {
-      "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\logo-mikuni1.png",
-      "PackagePath": "staticwebassets\\img\\logo-mikuni1.png"
-    },
-    {
-      "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\logo-mikuni_old.jpg",
-      "PackagePath": "staticwebassets\\img\\logo-mikuni_old.jpg"
-    },
-    {
       "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\logo-minisize.png",
       "PackagePath": "staticwebassets\\img\\logo-minisize.png"
     },
     {
-      "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\logo_CRI.png",
-      "PackagePath": "staticwebassets\\img\\logo_CRI.png"
-    },
-    {
-      "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\signin_bg.jpg",
-      "PackagePath": "staticwebassets\\img\\signin_bg.jpg"
-    },
-    {
       "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\signin_bg_rv.png",
       "PackagePath": "staticwebassets\\img\\signin_bg_rv.png"
-    },
-    {
-      "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\signin_bg_rv2.png",
-      "PackagePath": "staticwebassets\\img\\signin_bg_rv2.png"
-    },
-    {
-      "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\signin_bg_rv3.png",
-      "PackagePath": "staticwebassets\\img\\signin_bg_rv3.png"
-    },
-    {
-      "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\img\\tube.png",
-      "PackagePath": "staticwebassets\\img\\tube.png"
     },
     {
       "Id": "D:\\WorkOut\\logicode\\LGC.BNP.MIKUNI\\LGC.BNP.MIKUNI.Web\\wwwroot\\js\\signalr\\dist\\browser\\signalr.min.js",

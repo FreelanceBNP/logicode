@@ -8,7 +8,7 @@
 	string url = ViewData["url"] as string;
 	string _id = User.Claims.Where(c => c.Type == "user_id").Select(c => c.Value).FirstOrDefault();
 	var TimeReloadMonitor = _config.GetSection("TimeReloadMonitor").Value;
-	
+
 }
 @if (string.IsNullOrEmpty(_id))
 {
@@ -74,9 +74,9 @@
 										<thead>
 											<tr class="fs-7 fw-bold text-gray-500 border-bottom-0">
 												<th class="text-uppercase text-start">#</th>
-												<th class="text-uppercase text-center">Title</th>
-												<th class="text-uppercase text-center">Type Allow</th>
-												<th class="text-uppercase text-center">Computer Type</th>
+												<th class="text-uppercase text-center">Coponent</th>
+												<th class="text-uppercase text-center">tag code</th>
+												<th class="text-uppercase text-center">type</th>
 												<th class="text-uppercase text-center">Created Date</th>
 												<th class="text-uppercase text-center pe-12">STATUS</th>
 											</tr>
@@ -130,7 +130,7 @@
 									<div class="d-flex align-items-center flex-row-fluid flex-wrap">
 										<div class="flex-grow-1 me-2">
 											<a href="#" onclick="filterbystatus('alert')"
-												class="text-gray-800 text-hover-primary fs-6 fw-bold">Alert</a>
+												class="text-gray-800 text-hover-primary fs-6 fw-bold">Receive</a>
 
 											<span class="text-muted fw-semibold d-block fs-7"><span
 													id="countAlert"></span></span>
@@ -154,7 +154,7 @@
 									<div class="d-flex align-items-center flex-row-fluid flex-wrap">
 										<div class="flex-grow-1 me-2">
 											<a href="#" onclick="filterbystatus('normal')"
-												class="text-gray-800 text-hover-primary fs-6 fw-bold">Normal</a>
+												class="text-gray-800 text-hover-primary fs-6 fw-bold">Picking</a>
 
 											<span class="text-muted fw-semibold d-block fs-7"><span
 													id="countNormal"></span></span>
@@ -170,7 +170,7 @@
 
 								<div class="separator separator-dashed my-4"></div>
 
-								<div class="d-flex flex-stack">
+								@* <div class="d-flex flex-stack">
 									<div class="symbol symbol-40px me-4">
 										<div class="symbol-label fs-2 fw-semibold bg-primary text-inverse-primary">R
 										</div>
@@ -192,10 +192,10 @@
 									</div>
 								</div>
 
-								<div class="separator separator-dashed my-4"></div>
+								<div class="separator separator-dashed my-4"></div> *@
 
 
-								<div class="d-flex flex-stack">
+								@* <div class="d-flex flex-stack">
 									<div class="symbol symbol-40px me-4">
 										<div class="symbol-label fs-2 fw-semibold bg-warning text-inverse-warning">V
 										</div>
@@ -217,7 +217,7 @@
 									</div>
 								</div>
 
-								<div class="separator separator-dashed my-4"></div>
+								<div class="separator separator-dashed my-4"></div> *@
 
 							</div>
 
@@ -241,12 +241,11 @@
 										<thead>
 											<tr
 												class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
-												<th class=" ">Title</th>
-												<th class="">Computer Type</th>
-												<th class=" text-center">Employee name</th>
-												<th class=" text-center">Type allow</th>
-												<th class=" text-center">Log Date</th>
-												<th class=" text-center">Alert</th>
+												<th class=" ">#</th>
+												<th class=" ">component</th>
+												<th class="">tag code</th>
+												<th class=" text-center">Type</th>
+												<th class=" text-center">create Date</th>
 											</tr>
 										</thead>
 										<tbody class="text-gray-600 fw-semibold">
@@ -376,7 +375,7 @@
 		let limitCheckSendMail = 5
 		$( document ).ready(async function() {
 			@* console.log(globalTagMappingList) *@
-			
+
 			let timeCount = parseFloat(autoReload) * 60
 
 			await getDataItem();
@@ -400,7 +399,7 @@
 			let interval = setInterval(async () => {
 				if (connection == null) {
 					openScanTagCodeModal();
-				} 
+				}
 			}, 3000);
 			await getEventTag();
 			$('#alert_box').modal({ backdrop: 'static', keyboard: false });
@@ -413,10 +412,10 @@
 				url: "@Url.Action("CheckAllowPerson", "Master")",
 				data: {},
 				success: function (data) {
-					
+
 				},
 				error: function (err) {
-					
+
 				}
 			});
 		}
@@ -536,20 +535,6 @@
 										`;
 							},
 						},
-						{
-							targets: 5,
-							data: null,
-							className: "text-center",
-							render: function (data, type, full, meta) {
-								let txt = ''
-								if (full.is_alert) {
-									txt += `<span style="display:none;">type_alert</span><div class="badge badge-light text-danger  " >Alert</div>`
-								} else {
-									txt += `<span style="display:none;">type_not_alert</span><div class="badge badge-light text-success  " >Not Alert</div>`
-								};
-								return txt;
-							},
-						}
 					],
 					order: [[0, "asc"]],
 					dom:
@@ -615,7 +600,7 @@
 			let resConnected = false
 			@* console.log('connection', connection) *@
 			try {
-				
+
 					connection = new signalR.HubConnectionBuilder()
 						.withUrl("@url", {
 							skipNegotiation: true,
@@ -638,38 +623,38 @@
 						@* console.log('notification', _data) *@
 
 					});
-				
-				
-				
-				
+
+
+
+
 					connection.start()
 					.then(() => {
 						$('.set-status-connected-socket').html(`<span class="badge badge-light-success">Connected</span>`)
 						@* console.log("Connection started"); *@
-					
+
 					})
 					.catch((err) => {
 						$('.set-status-connected-socket').html(`<span class="badge badge-light-danger">Disconnected</span>`)
-						
+
 					});
-				
-			
+
+
 					connection.onclose(() => {
 						$('.set-status-connected-socket').html(`<span class="badge badge-light-danger">Disconnected</span>`)
 						@* console.log("Connection closed"); *@
 						@* console.log('connection', connection) *@
 						connection = null
-						
+
 						// Your code for handling connection closure
 					});
-				
+
 			} catch (error) {
 				resConnected = false
 				//set text disconnected
 				$('.set-status-connected-socket').html(`<span class="badge badge-light-warning">Error</span>`)
 				console.error(error)
 			}
-			
+
 		}
 		function renderTagTable(globalTagList) {
 			let txt = ``
@@ -919,7 +904,7 @@
 		var timeModalHid = null
 		function hideModal() {
 			if (timeModalHid) {
-				clearTimeout(timeModalHid); 
+				clearTimeout(timeModalHid);
 				timeModalHid = null;
 			}
 			if (timeModalHid == null) {
@@ -928,7 +913,7 @@
 					timeModalHid = null;
 				}, 1000 * 5);
 			}
-		
+
 		}
 	</script>
 	<style>

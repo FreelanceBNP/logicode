@@ -43,3 +43,4 @@ D:\WorkOut\logicode\LGC.BNP.MIKUNI\LGC.BNP.MIKUNI.Web\obj\Debug\net7.0\refint\LG
 D:\WorkOut\logicode\LGC.BNP.MIKUNI\LGC.BNP.MIKUNI.Web\obj\Debug\net7.0\LGC.BNP.MIKUNI.Web.pdb
 D:\WorkOut\logicode\LGC.BNP.MIKUNI\LGC.BNP.MIKUNI.Web\obj\Debug\net7.0\LGC.BNP.MIKUNI.Web.genruntimeconfig.cache
 D:\WorkOut\logicode\LGC.BNP.MIKUNI\LGC.BNP.MIKUNI.Web\obj\Debug\net7.0\ref\LGC.BNP.MIKUNI.Web.dll
+D:\WorkOut\logicode\LGC.BNP.MIKUNI\LGC.BNP.MIKUNI.Web\obj\Debug\net7.0\LGC.BNP.MIKUNI.Web.sourcelink.json

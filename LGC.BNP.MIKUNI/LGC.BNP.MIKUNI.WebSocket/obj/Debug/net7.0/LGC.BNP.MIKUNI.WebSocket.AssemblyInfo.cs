@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LGC.BNP.MIKUNI.WebSocket")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d4a167dbfd7b2990a38a3485a5a43352ea7897fd")]
 [assembly: System.Reflection.AssemblyProductAttribute("LGC.BNP.MIKUNI.WebSocket")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LGC.BNP.MIKUNI.WebSocket")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

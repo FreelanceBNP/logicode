@@ -60,11 +60,11 @@
 		}
 
 		thead .bg-light-dark {
-			background-color: #005da7 !important;
+			background-color: #272c35  !important;
 		}
 
 		table.table-bordered.dataTable thead tr:first-child td, table.table-bordered.dataTable thead tr:first-child th {
-			background-color: #005da7 !important;
+			background-color: #272c35  !important;
 			color: white;
 		}
 
@@ -292,12 +292,12 @@
 			<!--begin::Wrapper-->
 			<div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
 				<!--begin::Sidebar-->
-				<div id="kt_app_sidebar" class="app-sidebar flex-column" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="225px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle" style="background-color:#005da7 !important">
+				<div id="kt_app_sidebar" class="app-sidebar flex-column" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="225px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle" style="background-color:#272c35  !important">
 					<!--begin::Logo-->
 					<div class="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
 						<!--begin::Logo image-->
 						<a href="#">
-							<img alt="Logo" src="~/img/logo-mikuni.png" class="h-60px app-sidebar-logo-default" />
+							<img alt="Logo" src="~/img/Logicode-Logo.png" class="h-20px app-sidebar-logo-default" />
 							<img alt="Logo" src="~/img/logo-minisize.png" class="h-35px app-sidebar-logo-minimize" />
 						</a>
 						<!--end::Logo image-->
@@ -373,7 +373,7 @@
 													<span class="menu-title">Asset</span>
 												</a>
 											</div>
-											<div class="menu-item">
+											@* <div class="menu-item">
 												<a class="menu-link @Html.IsSelected("Master","ManageType")" asp-action="ManageType" asp-controller="Master">
 													<span class="menu-bullet">
 														<span class="bullet bullet-dot"></span>
@@ -396,13 +396,23 @@
 													</span>
 													<span class="menu-title">Config Member(VIP)</span>
 												</a>
-											</div>
+											</div> *@
 
 
 										</div>
 										<!--end:Menu sub-->
 									</div>
 									<!--end:Menu item-->
+									<div class="menu-item">
+										<!--begin:Menu link-->
+										<a class="menu-link @Html.IsSelected("Stock","")" asp-action="Overview" asp-controller="Stock">
+											<span class="menu-icon">
+												<i class="ki-outline ki-element-plus fs-2"></i>
+											</span>
+											<span class="menu-title">Stock Overview</span>
+										</a>
+										<!--end:Menu link-->
+									</div>
 									<!--begin:Menu item-->
 									<div data-kt-menu-trigger="click" class="menu-item menu-accordion @Html.IsSelectedTopic("Transaction")">
 										<!--begin:Menu link-->
@@ -549,7 +559,7 @@
 											<span class="menu-title">Reports</span>
 											<span class="menu-arrow"></span>
 										</span>
-										<div class="menu-sub menu-sub-accordion">
+										@* <div class="menu-sub menu-sub-accordion">
 											<div class="menu-item">
 												<a class="menu-link @Html.IsSelected("Report","ReportAllowItem")" asp-action="ReportAllowItem" asp-controller="Report">
 													<span class="menu-bullet">
@@ -574,7 +584,7 @@
 													<span class="menu-title">Report Tag Location</span>
 												</a>
 											</div>
-										</div>
+										</div> *@
 									</div>
 									<!--end:Menu item-->
 								</div>

@@ -1,0 +1,181 @@
+﻿@model List<UserData>
+@section HeaderTitle {
+	Stock Overview
+}
+@{
+	ViewData["Title"] = "Stock Overview";
+}
+<!--begin::Card-->
+<div class="card">
+	<!--begin::Card header-->
+	<div class="card-header border-0 pt-6">
+		<!--begin::Card toolbar-->
+		<div class="card-toolbar">
+			<!--begin::Toolbar-->
+			@* <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
+				<!--begin::Add user-->
+				<a class="btn btn-primary" asp-action="Edit" asp-controller="Account">
+					<i class="ki-duotone ki-plus fs-2"></i>Add User
+				</a>
+				<!--end::Add user-->
+			</div> *@
+			<!--end::Toolbar-->
+		</div>
+		<!--end::Card toolbar-->
+	</div>
+	<!--end::Card header-->
+	<!--begin::Card body-->
+	<div class="card-body py-4">
+		<!--begin::Table-->
+		<table class="table table table-bordered gy-5" id="kt_table">
+			<thead>
+				<tr class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
+					<th class="min-w-125px pl-2">component</th>
+					<th class="min-w-125px">component qty</th>
+					<th class="min-w-125px">tag code</th>
+					<th class="min-w-125px">update date</th>
+					<th class="min-w-125px text-center">Actions</th>
+				</tr>
+			</thead>
+			<tbody class="text-gray-600 fw-semibold">
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td class="d-flex align-items-center">
+							<!--begin:: Avatar -->
+							<div class="symbol symbol-circle symbol-50px overflow-hidden me-3">
+								<a asp-action="Edit" asp-controller="Account" asp-route-id_encrypt="@item.id_encrypt">
+									<div class="symbol-label">
+										<img src="@item.profile_picture"class="w-100" />
+									</div>
+								</a>
+							</div>
+							<!--end::Avatar-->
+							<!--begin::User details-->
+							<div class="d-flex flex-column">
+								<a asp-action="Edit" asp-controller="Account" asp-route-id_encrypt="@item.id_encrypt" class="fw-bold text-gray-800 text-hover-primary mb-1">@item.firstname @item.lastname</a>
+								<span>@item.position</span>
+								<span>@item.email</span>
+							</div>
+							<!--begin::User details-->
+						</td>
+						<td>
+							<span class="text-info fw-bold">0</span>
+						</td>
+						<td>
+							<div class="badge badge-light-primary fw-bold">
+								@if (item.is_admin)
+								{
+									<span>Administrator</span>
+								}
+								else if (item.is_staff)
+								{
+									<span>Staff</span>
+								}
+									else if (item.is_reporter)
+								{
+									<span>Reporter</span>
+								}
+								else
+								{
+									<span>N/A</span>
+								}
+							</div>
+						</td>
+						<td>@item.created_date.ToString("dd-MM-yyyy HH:mm:ss")</td>
+						<td class="text-center">
+							<a asp-action="Edit" asp-controller="Account" asp-route-id_encrypt="@item.id_encrypt" class="menu-link px-3"><i class="ki-outline ki-notepad-edit text-primary fs-3"></i> </a>
+							@if (User.Identity.Name != item.username || item.username != "NaPann")
+							{
+								<a href="#" onclick="goDelete('@item.id_encrypt', '@item.firstname @item.lastname')" class="menu-link px-3"><i class="ki-outline ki-trash text-danger fs-3"></i> </a>
+							}
+
+
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<!--end::Table-->
+	</div>
+	<!--end::Card body-->
+</div>
+<!--end::Card-->
+@section Scripts {
+	<script>
+		$(function () {
+			$("#kt_table").DataTable({
+				order: [[0, "asc"]],
+				dom:
+					'<"row ms-2 me-3"' +
+					'<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-2"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
+					'<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-2"f<"invoice_status mb-3 mb-md-0">>' +
+					">t" +
+					'<"row mx-2"' +
+					'<"col-sm-12 col-md-6"i>' +
+					'<"col-sm-12 col-md-6"p>' +
+					">",
+				language: {
+					sLengthMenu: "_MENU_",
+					search: "",
+					searchPlaceholder: "Search",
+				},
+				buttons: [
+					{
+						extend: 'excel',
+						text: '<i class="bi bi-file-earmark-spreadsheet me-2 text-white"></i>Excel',
+						className: 'buttons-excel mx-3',
+						exportOptions: {
+							columns: [0, 1, 2, 3],
+						}
+
+					},
+				],
+			});
+		});
+
+		function goDelete(param, param_text) {
+
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "Do you want to Delete : " + param_text + " ?",
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonText: 'Confirm',
+				customClass: {
+					confirmButton: "btn btn-primary",
+					cancelButton: "btn btn-danger"
+				},
+				buttonsStyling: false,
+			}).then(function (result) {
+				if (result.value) {
+
+					$.ajax({
+						cache: false,
+						async: true,
+						type: "POST",
+						url: "@Url.Action("Delete", "Account")",
+						data: { id_encrypt: param },
+						success: function (data) {
+							if (data.status == "success") {
+								location.reload();
+							} else {
+								toastr.error("Something went wrong : " + data.message);
+							}
+						},
+						error: function (err) {
+							swal.close();
+							toastr.error("Something went wrong");
+						},
+						complete: function (data) {
+
+						}
+
+					});
+				}
+			});
+
+		}
+
+	</script>
+}
