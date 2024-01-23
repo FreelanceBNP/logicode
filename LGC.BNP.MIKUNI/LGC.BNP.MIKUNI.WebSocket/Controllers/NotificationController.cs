@@ -29,13 +29,14 @@ namespace LGC.BNP.MIKUNI.WebSocket.Controllers
 
         [Route("autobank/pushnoti")]
         [HttpPost]
-        public async Task<ActionResult<string>> noti([FromForm] string tag_code)
+        public async Task<ActionResult<string>> noti([FromForm] string tag_code , [FromForm] string type)
         {
             try
             {
                 JObject returnModel = new JObject {
-                    { "tag_code" , tag_code }
-            };
+                    { "tag_code" , tag_code },
+					 { "type" , type }
+			};
                 string jsonString = JsonConvert.SerializeObject(returnModel);
                 await _hubContext.Clients.All.SendAsync("notification", jsonString);
             }

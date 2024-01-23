@@ -36,17 +36,19 @@ namespace LGC.BNP.MIKUNI.Read.Tag
 		public Form1()
         {
             InitializeComponent();
-            InitializeSignalRConnection();
+            //InitializeSignalRConnection();
             button2.Enabled = false;
             status_segnalr.Enabled = false;
             status_reader.Enabled = false;
-            btn_start.Enabled = false;
+            btn_start.Enabled = true;
             btn_con_signalr.Enabled = false;
+			show_type.Text = Properties.Settings.Default.Type;
 
 
-            myTimer.Tick += new EventHandler(TimerEventProcessor);
+
+			myTimer.Tick += new EventHandler(TimerEventProcessor);
             // Sets the timer interval to 5 seconds.
-            myTimer.Interval = 300;
+            myTimer.Interval = Properties.Settings.Default.intervalTime;
 
         }
 
@@ -137,9 +139,11 @@ namespace LGC.BNP.MIKUNI.Read.Tag
             status_reader.Text = "Connecting..";
             status_reader.BackColor = Color.Thistle;
             status_reader.ForeColor = Color.White;
+			myTimer.Start();
 
 
-	
+
+
 
 			if (reader.ReaderName != null)
             {
@@ -553,9 +557,7 @@ namespace LGC.BNP.MIKUNI.Read.Tag
                     }
 					var CovertToSting = "";
 					CovertToSting = getTag_id(epc);
-                    //CovertToSting = ConvertHexToString(epc);
-                    //CovertToSting = CovertToSting.Substring(1);
-                    await Task.Run(() => setText(CovertToSting));
+                    //await Task.Run(() => setText(CovertToSting));
                     await Task.Run(() => SendToSocket(CovertToSting));
 
 				}
@@ -771,25 +773,35 @@ namespace LGC.BNP.MIKUNI.Read.Tag
                 var host = Properties.Settings.Default.Socket;
                 var url = host + "Notification/autobank/pushnoti";
                 var client = new HttpClient();
-                var data = new Dictionary<string, string>
+                var type =Properties.Settings.Default.Type;
+				var data = new Dictionary<string, string>
                             {
                                 {"tag_code", Tag},
-                            };
-                var res = await client.PostAsync(url, new FormUrlEncodedContent(data));
-                var content = await res.Content.ReadAsStringAsync();
-            }
-            catch { 
+								{"type", type},
+							};
+                var res =  client.PostAsync(url, new FormUrlEncodedContent(data));
+
+			}
+            catch (Exception e){
+                throw e;
             }
         }
         private async Task RandomTag()
         {
+            try {
+				string[] tag_code = { "DMIT10081", "DMIT10117", "DMIT10346", "DMIT10409", "DMIT10079" };
+				Random rnd = new Random();
+				int random = rnd.Next(0, 5);
+				var tag_ran = tag_code[random];
+				await Task.Run(() => setText(tag_ran));
+                await Task.Run(() => SendToSocket(tag_ran));
+            }
+            catch (Exception e) {
+				throw e;
+			}
 
-            string[] tag_code = { "DMIT10081", "DMIT10117", "DMIT10346", "DMIT10409", "DMIT10079" };
-			Random rnd = new Random();
-			int random = rnd.Next(0, 5);
-            var tag_ran = tag_code[random];
-			await Task.Run(() => setText(tag_ran));
-			await Task.Run(() => SendToSocket(tag_ran));
+            
+			
 		}
 		static System.Windows.Forms.Timer myTimer = new System.Windows.Forms.Timer();
 

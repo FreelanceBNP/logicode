@@ -14,7 +14,6 @@
 {
 	<text>
 		<style>
-
 			.app-navbar,
 			div#kt_app_sidebar {
 				display: none !important;
@@ -28,9 +27,11 @@
 			div#kt_app_header {
 				left: 0px !important;
 			}
+
 			#kt_app_header_wrapper {
 				display: none !important;
 			}
+
 			#kt_app_wrapper {
 				margin: unset !important;
 				margin-top: 20px !important;
@@ -40,566 +41,92 @@
 }
 <div class="card">
 	<div class="card-header border-0 pt-6">
-		<div class="card-toolbar">
-			<div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
-				<ul class="nav nav-tabs nav-line-tabs fs-6">
-					<li class="nav-item">
-						<a class="nav-link active  btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
-							data-bs-toggle="tab" href="#kt_tab_pane_1">Tag Detect</a>
+		<div class="mb-2 ms-2">
+			<img alt="Logo" src="~/img/Logicode-Logo.png" class="h-20px app-sidebar-logo-default"
+				style="margin-top: 38px;" />
+			<span class="set-status-connected-socket"></span>
 
-					</li>
-					<li class="nav-item">
-						<a class="nav-link  btn btn-active-light btn-color-gray-600 btn-active-color-primary rounded-bottom-0"
-							data-bs-toggle="tab" href="#kt_tab_pane_2" onclick="loadTagNowDay()">Report Tag Detected</a>
-					</li>
-
-				</ul>
-			</div>
 		</div>
 	</div>
 	<div class="card-body py-4">
-		<div class="tab-content" id="myTabContent">
-			<div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel">
-				<div class="row g-5 g-xl-10 mb-5 mb-xl-10">
-					<div class="card card-flush h-md-100">
-						<div class="card-header pt-7">
-							<h3 class="card-title align-items-start flex-column">
-								<span class="card-label fw-bold text-gray-800">Tag Detect</span>
-								<span class="set-status-connected-socket"></span>
-							</h3>
-							<div class="card-body pt-6">
-								<div class="table-responsive">
-									<table class="table table-row-dashed align-middle gs-0 gy-3 my-0"
-										id="table_monitor">
-										<thead>
-											<tr class="fs-7 fw-bold text-gray-500 border-bottom-0">
-												<th class="text-uppercase text-start">#</th>
-												<th class="text-uppercase text-center">Coponent</th>
-												<th class="text-uppercase text-center">tag code</th>
-												<th class="text-uppercase text-center">type</th>
-												<th class="text-uppercase text-center">Created Date</th>
-												<th class="text-uppercase text-center pe-12">STATUS</th>
-											</tr>
-										</thead>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+		<div class="row text-uppercase">
+			<div class="col-3 bg-success" style="height: 100vh;">
+				<h3 class="text-center mt-2"> in</h3>
+				<div class="d-flex justify-content-center align-items-center fs-4 fw-bolder"style="height: 100vh;"><input  id="stock_in" type="number" value="0" hidden/><span id="show_stock_in" style="    font-size: 55px;">0</span></div>
 			</div>
-			<div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
-				<div class="row g-5 g-xl-10 mb-5 mb-xl-10">
-					<div class="col-xl-3">
-						<div class="card card-flush h-md-100">
-							<div class="card-header border-0 pt-5">
-								<h3 class="card-title align-items-start flex-column">
-									<span class="card-label fw-bold text-gray-900">Item pass from one day</span>
-								</h3>
-							</div>
-							<div class="card-body pt-6">
-								<div class="d-flex flex-stack">
-									<div class="symbol symbol-40px me-4">
-										<div class="symbol-label fs-2 fw-semibold bg-secondary text-inverse-secondary">A
-										</div>
-									</div>
-
-									<div class="d-flex align-items-center flex-row-fluid flex-wrap">
-										<div class="flex-grow-1 me-2">
-											<a href="#" onclick="filterbystatus('all')"
-												class="text-gray-800 text-hover-primary fs-6 fw-bold">All</a>
-
-											<span class="text-muted fw-semibold d-block fs-7"><span
-													id="countAll"></span></span>
-										</div>
-										<a href="#" onclick="filterbystatus('all')"
-											class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
-											<i class="ki-duotone ki-arrow-right fs-2"><span class="path1"></span><span
-													class="path2"></span></i> </a>
-									</div>
-								</div>
-
-								<div class="separator separator-dashed my-4"></div>
-
-								<div class="d-flex flex-stack">
-									<div class="symbol symbol-40px me-4">
-										<div class="symbol-label fs-2 fw-semibold bg-danger text-inverse-danger">A
-										</div>
-									</div>
-
-									<div class="d-flex align-items-center flex-row-fluid flex-wrap">
-										<div class="flex-grow-1 me-2">
-											<a href="#" onclick="filterbystatus('alert')"
-												class="text-gray-800 text-hover-primary fs-6 fw-bold">Receive</a>
-
-											<span class="text-muted fw-semibold d-block fs-7"><span
-													id="countAlert"></span></span>
-										</div>
-										<a href="#" onclick="filterbystatus('alert')"
-											class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
-											<i class="ki-duotone ki-arrow-right fs-2"><span class="path1"></span><span
-													class="path2"></span></i> </a>
-									</div>
-								</div>
-
-								<div class="separator separator-dashed my-4"></div>
-
-
-								<div class="d-flex flex-stack">
-									<div class="symbol symbol-40px me-4">
-										<div class="symbol-label fs-2 fw-semibold bg-success text-inverse-success">N
-										</div>
-									</div>
-
-									<div class="d-flex align-items-center flex-row-fluid flex-wrap">
-										<div class="flex-grow-1 me-2">
-											<a href="#" onclick="filterbystatus('normal')"
-												class="text-gray-800 text-hover-primary fs-6 fw-bold">Picking</a>
-
-											<span class="text-muted fw-semibold d-block fs-7"><span
-													id="countNormal"></span></span>
-										</div>
-
-										<a href="#" onclick="filterbystatus('normal')"
-											class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
-											<i class="ki-duotone ki-arrow-right fs-2"><span class="path1"></span><span
-													class="path2"></span></i> </a>
-									</div>
-								</div>
-
-
-								<div class="separator separator-dashed my-4"></div>
-
-								@* <div class="d-flex flex-stack">
-									<div class="symbol symbol-40px me-4">
-										<div class="symbol-label fs-2 fw-semibold bg-primary text-inverse-primary">R
-										</div>
-									</div>
-
-									<div class="d-flex align-items-center flex-row-fluid flex-wrap">
-										<div class="flex-grow-1 me-2">
-											<a href="#" onclick="filterbystatus('repair')"
-												class="text-gray-800 text-hover-primary fs-6 fw-bold">Repair</a>
-
-											<span class="text-muted fw-semibold d-block fs-7"><span
-													id="countRepair"></span></span>
-										</div>
-
-										<a href="#" onclick="filterbystatus('repair')"
-											class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
-											<i class="ki-duotone ki-arrow-right fs-2"><span class="path1"></span><span
-													class="path2"></span></i> </a>
-									</div>
-								</div>
-
-								<div class="separator separator-dashed my-4"></div> *@
-
-
-								@* <div class="d-flex flex-stack">
-									<div class="symbol symbol-40px me-4">
-										<div class="symbol-label fs-2 fw-semibold bg-warning text-inverse-warning">V
-										</div>
-									</div>
-
-									<div class="d-flex align-items-center flex-row-fluid flex-wrap">
-										<div class="flex-grow-1 me-2">
-											<a href="#" onclick="filterbystatus('vip')"
-												class="text-gray-800 text-hover-primary fs-6 fw-bold">VIP</a>
-
-											<span class="text-muted fw-semibold d-block fs-7"><span
-													id="countVip"></span></span>
-										</div>
-
-										<a href="#" onclick="filterbystatus('vip')"
-											class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
-											<i class="ki-duotone ki-arrow-right fs-2"><span class="path1"></span><span
-													class="path2"></span></i> </a>
-									</div>
-								</div>
-
-								<div class="separator separator-dashed my-4"></div> *@
-
-							</div>
-
-						</div>
-					</div>
-
-					<div class="col-xl-9">
-
-						<div class="card card-flush h-md-100">
-							<div class="card-header pt-7">
-								<h3 class="card-title align-items-start flex-column">
-									<span class="card-label fw-bold text-gray-800">Report Tag Detected</span>
-
-									<span class="text-gray-500 mt-1 fw-semibold fs-6">Today</span>
-								</h3>
-
-							</div>
-							<div class="card-body pt-6">
-								<div class="table-responsive">
-									<table class="table table table-bordered gy-5" id="kt_table_2">
-										<thead>
-											<tr
-												class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
-												<th class=" ">#</th>
-												<th class=" ">component</th>
-												<th class="">tag code</th>
-												<th class=" text-center">Type</th>
-												<th class=" text-center">create Date</th>
-											</tr>
-										</thead>
-										<tbody class="text-gray-600 fw-semibold">
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+			<div class="col-6 bg-primary" style="height: 100vh;">
+				<h3 class="text-center mt-2"> stock</h3>
+				<div class="d-flex justify-content-center align-items-center fs-4 fw-bolder"style="height: 100vh;"><input id="stock" type="number" value="0" hidden/><span id="show_stock" style="    font-size: 55px;">0</span></div>
 			</div>
-		</div>
-		<div class="modal fade" tabindex="-1" id="scan_tag_code">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h3 class="modal-title">Scan Tag Code</h3>
-						<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
-							aria-label="Close">
-							<i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
-									class="path2"></span></i>
-						</div>
-					</div>
-
-					<div class="modal-body">
-						<table class="table table table-bordered gy-5" id="kt_table">
-							<thead>
-								<tr class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
-									<th class=" text-white min-w-125px pl-2">No</th>
-									<th class=" text-white min-w-125px">Tag Code</th>
-									<th class=" text-white min-w-125px">Count</th>
-								</tr>
-							</thead>
-							<tbody class="text-gray-600 fw-semibold" id="rederTag">
-							</tbody>
-						</table>
-						</table>
-					</div>
-
-					<div class="modal-footer">
-						<button type="button" class="btn btn-success btn-sm" onclick="saveDataTag();">
-							Registration</button>
-						<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="modal fade" tabindex="-1" id="alert_box">
-			<div class="modal-dialog modal-lg modal-dialog-centered">
-				<div class="modal-content br-bottom">
-					<div class="modal-header stripe-1">
-						<h3 class="modal-title"></h3>
-						<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
-							aria-label="Close">
-							<i class="ki-duotone ki-cross fs-1 text-black"><span class="path1"></span><span
-									class="path2"></span></i>
-						</div>
-					</div>
-
-					<div class="modal-body br-bottom" style="background-color: #ed1b24 !important ;">
-						<div class="row">
-							<div class="col-md-4 text-end">
-								<i class="bi bi-exclamation-triangle-fill me-2 text-white"
-									style="font-size: 175px;"></i>
-							</div>
-							<div class="col-md-8 text-start">
-								<div>
-									<div class="text-white" style="font-size: 50px;">Warning</div>
-								</div>
-								<div class="text-start">
-									<span class="text-white" id="alert-text" style="font-size: 25px;"></span>
-								</div>
-
-							</div>
-
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="modal fade" tabindex="-1" id="mapping_mas_item">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h3 class="modal-title">Mapping Item</h3>
-						<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
-							aria-label="Close">
-							<i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
-									class="path2"></span></i>
-						</div>
-					</div>
-
-					<div class="modal-body">
-						<table class="table table table-bordered gy-5" id="mapping_table_code">
-							<thead>
-								<tr class="text-start text-black-400 fw-bold fs-7 text-uppercase gs-0 bg-light-dark">
-									<th class="text-white min-w-125px pl-2">Tag Code</th>
-									<th class="text-white min-w-125px">Item Code</th>
-								</tr>
-							</thead>
-							<tbody class="text-gray-600 fw-semibold" id="rederTag">
-							</tbody>
-						</table>
-						</table>
-					</div>
-
-					<div class="modal-footer">
-						<button type="button" class="btn btn-light btn-xs" data-bs-dismiss="modal">Close</button>
-						@* <button type="button" class="btn btn-primary btn-sm"
-						onclick="saveDataTag();">Save</button> *@
-					</div>
-				</div>
+			<div class="col-3 bg-danger" style="height: 100vh;">
+				<h3 class="text-center mt-2"> out</h3>
+				<div class="d-flex justify-content-center align-items-center fs-4 fw-bolder"style="height: 100vh;"><input id="stock_out" type="number" value="0" hidden/><span id="show_stock_out" style="    font-size: 55px;">0</span></div>
 			</div>
 		</div>
 	</div>
-</div>
-@section Scripts {
-	<script>
-		let globalTagMappingList = @Html.Raw(Json.Serialize(Model));
-		let globalTagList = [];
-		let globalItemList = [];
-		let globalTagEvent = [];
-		let connection = null;
-		let isConnected = false
-		let dt_invoice_table_datatable = null;
-		let autoReload = "@TimeReloadMonitor"
-		let limitCheckSendMail = 5
-		$( document ).ready(async function() {
-			@* console.log(globalTagMappingList) *@
+	@section Scripts {
+		<script>
+			let globalTagMappingList = @Html.Raw(Json.Serialize(Model));
+			let globalTagList = [];
+			let globalItemList = [];
+			let globalTagEvent = [];
+			let connection = null;
+			let isConnected = false
+			let dt_invoice_table_datatable = null;
+			let autoReload = "@TimeReloadMonitor"
+			$(document).ready(async function () {
+					let timeCount = parseFloat(autoReload) * 60
 
-			let timeCount = parseFloat(autoReload) * 60
+				await openScanTagCodeModal()
 
-			await getDataItem();
-			await openScanTagCodeModal()
-
-			let countTimeReload = 0
-			let intervalReload = setInterval(async () => {
-				@* console.log('time reload', `${countTimeReload}/${timeCount}`) *@
-				if (countTimeReload == parseFloat(timeCount)) {
-					location.reload();
-					clearInterval(intervalReload)
-				}
-				if (limitCheckSendMail == 0) {
-					checkAllowPerson()
-					limitCheckSendMail = 5
-				}
-				countTimeReload += 1
-				limitCheckSendMail--
-
-			}, 1000);
-			let interval = setInterval(async () => {
-				if (connection == null) {
-					openScanTagCodeModal();
-				}
-			}, 3000);
-			await getEventTag();
-			$('#alert_box').modal({ backdrop: 'static', keyboard: false });
-		});
-		function checkAllowPerson() {
-			$.ajax({
-				cache: false,
-				async: true,
-				type: "POST",
-				url: "@Url.Action("CheckAllowPerson", "Master")",
-				data: {},
-				success: function (data) {
-
-				},
-				error: function (err) {
-
-				}
-			});
-		}
-		function loadTagNowDay() {
-			$.ajax({
-				cache: false,
-				async: true,
-				type: "POST",
-				url: "@Url.Action("GetReportTagLog", "Master")",
-				data: {},
-				success: function (data) {
-					if (data.status == "success") {
-						initDataMasterItem(data.data);
-						countTagData(data.data)
-					} else {
-						toastr.error("Something went wrong : " + data.message);
+				let countTimeReload = 0
+				let intervalReload = setInterval(async () => {
+							if (countTimeReload == parseFloat(timeCount)) {
+						location.reload();
+						clearInterval(intervalReload)
 					}
-				},
-				error: function (err) {
-					swal.close();
-					toastr.error("Something went wrong");
-					resolve('error')
-				}
+					countTimeReload += 1
+
+				}, 1000);
+				let interval = setInterval(async () => {
+					if (connection == null) {
+						openScanTagCodeModal();
+					}
+				}, 3000);
+				await getEventTag();
+				$('#alert_box').modal({ backdrop: 'static', keyboard: false });
 			});
-		}
-		function countTagData(data) {
-			let countAlert = 0;
-			let countNormal = 0;
-			let countRepair = 0;
-			let countVip = 0;
-			let countAll = 0;
-			data.forEach((item, index) => {
-				if (item.is_alert) {
-					countAlert += 1;
-				}
-				if (item.type_allow == 'normal') {
-					countNormal += 1;
-				}
-				if (item.type_allow == 'repair') {
-					countRepair += 1;
-				}
-				if (item.type_allow == 'vip') {
-					countVip += 1;
-				}
-				countAll += 1;
-			})
-			$('#countAlert').html(numeral(countAlert).format('0,0'));
-			$('#countNormal').html(numeral(countNormal).format('0,0'));
-			$('#countRepair').html(numeral(countRepair).format('0,0'));
-			$('#countVip').html(numeral(countVip).format('0,0'));
-			$('#countAll').html(numeral(countAll).format('0,0'));
-		}
-		async function initDataMasterItem(data) {
-			var dt_invoice_table = $("#kt_table_2");
-			await new Promise((resolve) => {
-				dt_invoice_table.DataTable().clear().destroy();
-				resolve(true)
-			})
-			await new Promise((resolve) => {
-				dt_invoice_table_datatable = dt_invoice_table.DataTable({
-					destroy: true,
-					data: data,
-					pageLength: 50,
-					columnDefs: [
-						{
-							targets: 0,
-							data: null,
-							className: "text-left",
-							render: function (data, type, full, meta) {
-								return full.title;
-							},
-						},
-						{
-							targets: 1,
-							data: null,
-							className: "text-left",
-							render: function (data, type, full, meta) {
-								return `
-										<div>Computer Type: <span class="fw-bold text-primary">${full.computer_type}</span></div>
-										<div>Computer Brand: <span class="fw-bold text-primary">${full.computer_brand}</span></div>
-										<div>Serial Number: <span class="fw-bold text-primary">${full.serial_number}</span></div>
-										<div>Computer Model: <span class="fw-bold text-primary">${full.computer_model}</span></div>
-										`;
-							},
-						},
-						{
-							targets: 2,
-							data: null,
-							className: "text-left",
-							render: function (data, type, full, meta) {
-								return full.emp_name;
-							},
-						},
-						{
-							targets: 3,
-							data: null,
-							className: "text-center",
-							render: function (data, type, full, meta) {
-								let txt = ''
-								if (full.type_allow == 'vip') {
-									txt += `<div class="badge badge-light text-primary  " >${full.type_allow.toUpperCase()}</div>`
-								} else if (full.type_allow == 'repair') {
-									txt += `<div class="badge badge-light text-danger  " >${full.type_allow.toUpperCase()}</div>`
-								} else if (full.type_allow == 'normal') {
-									txt += `<div class="badge badge-light text-success  " >${full.type_allow.toUpperCase()}</div>`
-								}
-								return txt;
-							},
-						},
-						{
-							targets: 4,
-							data: null,
-							className: "text-center",
-							render: function (data, type, full, meta) {
-								return `
-											<div>Log Date: <span class="fw-bold text-danger">${full.tag_location_date ? moment(full.tag_location_date).format('DD/MM/YYYY HH:mm') : '-'}</span></div>
-										`;
-							},
-						},
-					],
-					order: [[0, "asc"]],
-					dom:
-						'<"row ms-2 me-3"' +
-						'<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-2"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
-						'<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-2"f<"invoice_status mb-3 mb-md-0">>' +
-						">t" +
-						'<"row mx-2"' +
-						'<"col-sm-12 col-md-6"i>' +
-						'<"col-sm-12 col-md-6"p>' +
-						">",
-					language: {
-						sLengthMenu: "_MENU_",
-						search: "",
-						searchPlaceholder: "Search",
+
+			function loadTagNowDay() {
+				$.ajax({
+					cache: false,
+					async: true,
+					type: "POST",
+					url: "@Url.Action("GetReportTagLog", "Master")",
+					data: {},
+					success: function (data) {
+						if (data.status == "success") {
+							initDataMasterItem(data.data);
+							countTagData(data.data)
+						} else {
+							toastr.error("Something went wrong : " + data.message);
+						}
 					},
-					buttons: [
-						{
-							extend: 'excel',
-							text: '<i class="bi bi-file-earmark-spreadsheet me-2 text-white"></i>Excel',
-							className: 'buttons-excel mx-3',
-							exportOptions: {
-								columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-							}
-
-						},
-					],
+					error: function (err) {
+						swal.close();
+						toastr.error("Something went wrong");
+						resolve('error')
+					}
 				});
-				resolve(true)
-			})
-
-
-
-		}
-		function testSetAlrm(tag) {
-			connection.invoke("SetAlarm", `Alert ${tag}`).catch(err => console.error(err.toString()));
-		}
-		function filterbystatus(status) {
-			if (dt_invoice_table_datatable !== null) {
-				let column = 0,
-					search = status;
-				dt_invoice_table_datatable.column(3).search('', false, true).draw();
-				dt_invoice_table_datatable.column(5).search('', false, true).draw();
-				if (status == 'alert') {
-
-					column = 5
-					search = 'type_alert'
-				} else if (status == 'normal') {
-					column = 3
-				} else if (status == 'repair') {
-					column = 3
-				} else if (status == 'vip') {
-					column = 3
-				}
-				else {
-					column = 3
-					search = ''
-				}
-				dt_invoice_table_datatable.column(column).search(search, false, true).draw();
 			}
-		}
-		async function openScanTagCodeModal() {
-			let resConnected = false
-			@* console.log('connection', connection) *@
-			try {
+
+			function testSetAlrm(tag) {
+				connection.invoke("SetAlarm", `Alert ${tag}`).catch(err => console.error(err.toString()));
+			}
+
+			async function openScanTagCodeModal() {
+				let resConnected = false
+						try {
 
 					connection = new signalR.HubConnectionBuilder()
 						.withUrl("@url", {
@@ -610,239 +137,82 @@
 
 					connection.on('notification', function (obj) {
 						var _data = JSON.parse(obj);
-						let posTag = globalTagList.findIndex(x => x.tag_code == _data.tag_code)
-						if (posTag != -1) {
-							globalTagList[posTag].count = globalTagList[posTag].count + 1
-						} else {
-							globalTagList.push({
+			 console.log('notification', _data)
+						if(_data.type =='in')
+						{
+							let stock_in =$('#stock_in').val()
+							let stock =$('#stock').val()
+							stock_in = parseInt(stock_in) + 1
+							stock = parseInt(stock) + 1
+
+							$('#stock_in').val(stock_in)
+							$('#stock').val(stock)
+							$('#show_stock_in').html(stock_in)
+							$('#show_stock').html(stock)
+
+						}
+						else if(_data.type =='out')
+						{
+							let stock_out =$('#stock_out').val()
+							let stock =$('#stock').val()
+							stock_out = parseInt(stock_out) + 1
+							stock = parseInt(stock) - 1
+							if(stock < 0)
+							{
+								toastr.error("Stock out more than stock");
+								return false;
+							}
+							$('#stock_out').val(stock_out)
+							$('#stock').val(stock)
+							$('#show_stock_out').html(stock_out)
+							$('#show_stock').html(stock)
+
+						}
+							globalTagEvent.push({
 								tag_code: _data.tag_code,
+								type: _data.type,
 								count: 1
 							})
-						}
-						CheckTagCode(_data.tag_code)
-						@* console.log('notification', _data) *@
+					if (time == null) {
+					time = setTimeout(async () => {
+						await saveDataTag();
+						time = null;
+						globalTagEvent = [];
+					}, 1000 * 1);
 
-					});
+				}
 
 
-
+						});
 
 					connection.start()
-					.then(() => {
-						$('.set-status-connected-socket').html(`<span class="badge badge-light-success">Connected</span>`)
-						@* console.log("Connection started"); *@
+						.then(() => {
+							$('.set-status-connected-socket').html(`<span class="badge badge-light-success">Connected</span>`)
+								})
+						.catch((err) => {
+							$('.set-status-connected-socket').html(`<span class="badge badge-light-danger">Disconnected</span>`)
 
-					})
-					.catch((err) => {
-						$('.set-status-connected-socket').html(`<span class="badge badge-light-danger">Disconnected</span>`)
-
-					});
-
+						});
 
 					connection.onclose(() => {
 						$('.set-status-connected-socket').html(`<span class="badge badge-light-danger">Disconnected</span>`)
-						@* console.log("Connection closed"); *@
-						@* console.log('connection', connection) *@
-						connection = null
-
-						// Your code for handling connection closure
+							connection = null
 					});
 
-			} catch (error) {
-				resConnected = false
-				//set text disconnected
-				$('.set-status-connected-socket').html(`<span class="badge badge-light-warning">Error</span>`)
-				console.error(error)
-			}
+				} catch (error) {
+					resConnected = false
+					//set text disconnected
+					$('.set-status-connected-socket').html(`<span class="badge badge-light-warning">Error</span>`)
+					console.error(error)
+				}
 
-		}
-		function renderTagTable(globalTagList) {
-			let txt = ``
-			globalTagList.forEach((item, index) => {
-				txt += `<tr>
-																				<td>${index + 1}</td>
-																				<td>${item.tag_code}</td>
-																				<td>${item.count}</td>
-																			</tr>`
-			})
-			$('#rederTag').html(txt)
-		}
-		function initDatatableMonitor(data) {
-			var dt_invoice_table = $("#table_monitor");
-			let dt_invoice_table_datatable = dt_invoice_table.DataTable({
-				destroy: true,
-				data: data,
-				columnDefs: [
-					{
-						targets: 0,
-						data: null,
-						className: "text-center",
-						render: function (data, type, full, meta) {
-							return `<div class="d-flex align-items-center">
-																					<div class="symbol symbol-50px me-3">
-																						<img src="/assets/media/avatars/blank.png" class="" alt="">
-																					</div>
-
-																					<div class="d-flex justify-content-start flex-column">
-																						<span class="text-gray-500 fw-bold d-block fs-7">${full.emp_name != null ? full.emp_name : "Available Owner"}</span>
-																					</div>
-																				</div>`;
-						},
-					},
-					{
-						targets: 1,
-						data: null,
-						className: "text-center",
-						render: function (data, type, full, meta) {
-							return full.title;
-						},
-					},
-					{
-						targets: 2,
-						data: null,
-						className: "text-center",
-						render: function (data, type, full, meta) {
-							let txt = ''
-							if (full.type_allow == '' || full.type_allow == null) {
-								txt += `<div class="badge badge-light text-waining">Not Allow</div>`
-							}
-							else {
-								if (full.type_allow == 'vip') {
-									txt += `<div class="badge badge-light text-primary  " >${full.type_allow.toUpperCase()}</div>`
-								} else if (full.type_allow == 'repair') {
-									txt += `<div class="badge badge-light text-danger  " >${full.type_allow.toUpperCase()}</div>`
-								} else if (full.type_allow == 'normal') {
-									txt += `<div class="badge badge-light text-success  " >${full.type_allow.toUpperCase()}</div>`
-								}
-								txt += `${moment(full.aging_date).format('DD/MM/YYYY HH:mm')}`;
-							}
-							return txt;
-						},
-					},
-					{
-						targets: 3,
-						data: null,
-						className: "text-left",
-						render: function (data, type, full, meta) {
-							return `
-																	<div>Computer Type: <span class="fw-bold text-primary">${full.computer_type != null ? full.computer_type : "-"}</span></div>
-																	<div>Computer Brand: <span class="fw-bold text-primary">${full.computer_brand != null ? full.computer_brand : "-"}</span></div>
-																	<div>Serial Number: <span class="fw-bold text-primary">${full.serial_number != null ? full.serial_number : "-"}</span></div>
-																	<div>Computer Model: <span class="fw-bold text-primary">${full.computer_model != null ? full.computer_model : "-"}</span></div>
-																	`;
-						},
-					},
-					{
-						targets: 4,
-						data: null,
-						className: "text-center",
-						render: function (data, type, full, meta) {
-							return moment(full.created_date).format('DD-MM-YYYY :HH:MM:SS');
-						},
-					},
-					{
-						targets: 5,
-						data: null,
-						className: "text-center",
-						render: function (data, type, full, meta) {
-							let txt = ''
-							if (!full.is_alert) {
-								txt = `<div class="badge py-3 px-4 fs-7 badge-light-success"><i class="bi bi-check-square fs-4 me-2"></i>${full.type_allow}</div>`
-							} else {
-								txt = `<div class="badge py-3 px-4 fs-7 badge-light-danger"><i class="bi bi-exclamation-octagon fs-4 me-2"></i>Alert</div> `
-							}
-							return txt;
-						},
-					},
-				],
-			});
-			setTimeout(() => {
-				dt_invoice_table_datatable.on('order.dt search.dt', function () {
-					let i = 1;
-					dt_invoice_table_datatable.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
-						this.data(i++);
-					});
-				}).draw();
-			}, 300);
-		}
-		async function getDataItem() {
-			let res = await new Promise((resolve) => {
-				$.ajax({
-					cache: false,
-					async: true,
-					type: "POST",
-					url: "@Url.Action("GetDataItem", "Master")",
-					success: function (data) {
-						if (data.status) {
-							resolve(data);
-						} else {
-							resolve([]);
-						}
-					},
-					error: function (err) {
-						resolve([]);
-					}
-				});
-			})
-			if (res.data.length > 0) {
-				globalItemList = res.data
-				@* console.log("globalItemList", globalItemList) *@
 			}
-		}
-		async function getEventTag() {
-			let res = await new Promise((resolve) => {
-				$.ajax({
-					cache: false,
-					async: true,
-					type: "POST",
-					url: "@Url.Action("GetEventTag", "Master")",
-					success: function (data) {
-						if (data.status) {
-							resolve(data);
-						} else {
-							resolve([]);
-						}
-					},
-					error: function (err) {
-						resolve([]);
-					}
-				});
-			})
-			if (res.data != null && res.data.length > 0) {
-				initDatatableMonitor(res.data)
-			}
-			else {
-				initDatatableMonitor([])
-			}
-		}
-		let time = null;
-		function CheckTagCode(tag_code) {
+					function CheckTagCode(tag_code) {
 			let datenow = moment().format('DD/MM/YYYY HH:mm')
 			let pos = globalItemList.findIndex(x => x.title == tag_code)
 			if (pos != -1) {
 				let myItemData = globalItemList[pos]
-				if (myItemData.is_allow) {
-					let aging_date = moment(myItemData.aging_date).format('DD/MM/YYYY HH:mm')
-					if (myItemData.type_allow == "normal") {
 
-						if (moment(aging_date).isBefore(datenow)) {
-							globalItemList[pos]["is_alert"] = true;
-							testSetAlrm(tag_code);
-							showAlert(globalItemList[pos]);
-						}
-						else {
-							globalItemList[pos]["is_alert"] = false;
-						}
-					}
-					else {
-						globalItemList[pos]["is_alert"] = false;
-					}
-				}
-				else {
-					globalItemList[pos]["is_alert"] = true;
-					testSetAlrm(tag_code);
-					showAlert(globalItemList[pos]);
-				}
 				let posDupp = globalTagEvent.findIndex(x => x.tag_code == tag_code)
 				if (posDupp == -1) {
 					globalTagEvent.push(globalItemList[pos])
@@ -857,86 +227,118 @@
 				}
 			}
 		}
-		async function saveDataTag() {
-			@* console.log("globalTagEvent", globalTagEvent) *@
-			let res = await new Promise((resolve) => {
-				$.ajax({
-					cache: false,
-					async: true,
-					type: "POST",
-					url: "@Url.Action("SaveTagEvent", "Master")",
-					data: {
-						eventList: globalTagEvent
-					},
-					success: function (data) {
-						if (data.status) {
-							resolve(data);
-						} else {
+
+			async function getEventTag() {
+				let res = await new Promise((resolve) => {
+					$.ajax({
+						cache: false,
+						async: true,
+						type: "POST",
+						url: "@Url.Action("GetEventTag", "Master")",
+						success: function (data) {
+							if (data.status) {
+								resolve(data);
+							} else {
+								resolve([]);
+							}
+						},
+						error: function (err) {
 							resolve([]);
 						}
-					},
-					error: function (err) {
-						resolve([]);
-					}
-				});
-			})
-			getEventTag();
-		}
-		function showAlert(data) {
-			let txt = ``
-			@* console.log("showAlert data", data) *@
-			if (data != null) {
-				let type = data.type_allow != null ? data.type_allow : "Not Allow"
-				txt = `Item : ${data.title} <br>
-					Type : ${type} <br>
-					@* Return Date : ${data.aging_date ? moment(data.aging_date).format('DD/MM/YYYY HH:mm') : ''} *@
-					`
-				if (data.emp_name != '' && data.emp_name != null) {
-					txt += ` Employee : ${data.emp_name}`
-
+					});
+				})
+				if (res.data != null && res.data.length > 0) {
+				}
+				else {
 				}
 			}
-			$('#alert-text').html(txt);
-			$('#alert_box').modal({ backdrop: 'static', keyboard: false })
-			$('#alert_box').modal('show');
-			hideModal();
-		}
-		var timeModalHid = null
-		function hideModal() {
-			if (timeModalHid) {
-				clearTimeout(timeModalHid);
-				timeModalHid = null;
+			let time = null;
+
+			async function saveDataTag() {
+					let res = await new Promise((resolve) => {
+						$.ajax({
+							cache: false,
+							async: true,
+							type: "POST",
+							url: "@Url.Action("SaveTagEvent", "Master")",
+							data: {
+								eventList: globalTagEvent
+							},
+							success: function (data) {
+								if (data.status) {
+									resolve(data);
+								} else {
+									resolve([]);
+								}
+							},
+							error: function (err) {
+								resolve([]);
+							}
+						});
+					})
+				getEventTag();
 			}
-			if (timeModalHid == null) {
-				timeModalHid = setTimeout(() => {
-					$('#alert_box').modal('hide');
+			function showAlert(data) {
+				let txt = ``
+						if (data != null) {
+					let type = data.type_allow != null ? data.type_allow : "Not Allow"
+					txt = `Item : ${data.title} <br>
+								Type : ${type} <br>
+								`
+					if (data.emp_name != '' && data.emp_name != null) {
+						txt += ` Employee : ${data.emp_name}`
+
+					}
+				}
+				$('#alert-text').html(txt);
+				$('#alert_box').modal({ backdrop: 'static', keyboard: false })
+				$('#alert_box').modal('show');
+				hideModal();
+			}
+			var timeModalHid = null
+			function hideModal() {
+				if (timeModalHid) {
+					clearTimeout(timeModalHid);
 					timeModalHid = null;
-				}, 1000 * 5);
+				}
+				if (timeModalHid == null) {
+					timeModalHid = setTimeout(() => {
+						$('#alert_box').modal('hide');
+						timeModalHid = null;
+					}, 1000 * 5);
+				}
+
 			}
+		</script>
+		<style>
+		.stripe-1 {
+			color: white;
+			background: repeating-linear-gradient(315deg, #ff9911 -4px, #ff9911 33px, white 34px, white 64px);
+		}
+
+		.br-bottom {
+			border-bottom-right-radius: 15px !important;
+			border-bottom-left-radius: 15px !important;
+			box-shadow: 5px 6px 2px #947575 !important;
 
 		}
-	</script>
-	<style>
-	.stripe-1 {
-		color: white;
-		background: repeating-linear-gradient(315deg, #ff9911 -4px, #ff9911 33px, white 34px, white 64px);
-	}
 
-	.br-bottom {
-		border-bottom-right-radius: 15px !important;
-		border-bottom-left-radius: 15px !important;
-		box-shadow: 5px 6px 2px #947575 !important;
+		.buttons-excel {
+			background-color: #50cd89 !important;
+			color: #fff !important;
+			border-color: #50cd89 !important;
+		}
+
+		.btn.btn-secondary {
+			background-color: #50cd89 !important;
+			color: #fff !important;
+			border-color: #50cd89 !important;
+		}
+		.set-status-connected-socket{
+			    position: absolute;
+				top: 59px;
+				left: 207px;
+
+		}
 
 	}
-	.buttons-excel {
-	background-color: #50cd89 !important;
-	color: #fff !important;
-	border-color: #50cd89 !important;
-	}
-	.btn.btn-secondary{
-		background-color: #50cd89 !important;
-		color: #fff !important;
-		border-color: #50cd89 !important;
-			}
-
-}
