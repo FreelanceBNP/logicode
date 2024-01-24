@@ -42,9 +42,6 @@ namespace LGC.BNP.MIKUNI.Read.Tag
             status_reader.Enabled = false;
             btn_start.Enabled = true;
             btn_con_signalr.Enabled = false;
-			show_type.Text = Properties.Settings.Default.Type;
-
-
 
 			myTimer.Tick += new EventHandler(TimerEventProcessor);
             // Sets the timer interval to 5 seconds.
@@ -546,19 +543,24 @@ namespace LGC.BNP.MIKUNI.Read.Tag
                 {
                     reportCount++;
                     string epc;
+                    long antenna;
 
-                    if (msg.TagReportData[i].EPCParameter[0].GetType() == typeof(PARAM_EPC_96))
+
+					if (msg.TagReportData[i].EPCParameter[0].GetType() == typeof(PARAM_EPC_96))
                     {
                         epc = ((PARAM_EPC_96)(msg.TagReportData[i].EPCParameter[0])).EPC.ToHexString();
-                    }
+						antenna = (msg.TagReportData[i].AntennaID.AntennaID);
+					}
                     else
                     {
                         epc = ((PARAM_EPCData)(msg.TagReportData[i].EPCParameter[0])).EPC.ToHexString();
-                    }
+                        antenna = (msg.TagReportData[i].AntennaID.AntennaID);
+
+					}
 					var CovertToSting = "";
 					CovertToSting = getTag_id(epc);
-                    //await Task.Run(() => setText(CovertToSting));
-                    await Task.Run(() => SendToSocket(CovertToSting));
+                    await Task.Run(() => setText(CovertToSting));
+                    await Task.Run(() => SendToSocket(CovertToSting, antenna));
 
 				}
             }
@@ -766,14 +768,25 @@ namespace LGC.BNP.MIKUNI.Read.Tag
             return ascii;
         }
 
-        private async Task SendToSocket(string Tag)
+        private async Task SendToSocket(string Tag ,long atenna_id)
         {
             try
-            {
+			{
+				var atenta_port_in = Properties.Settings.Default.AtentaPortIN;
+				var atenta_port_out = Properties.Settings.Default.AtentaPortOut;
+                var type = string.Empty;
+
+				if (atenna_id == atenta_port_in) 
+                {
+                    type = "in";
+                }
+                else if(atenna_id == atenta_port_out)
+                {
+                    type = "out";
+                }
                 var host = Properties.Settings.Default.Socket;
                 var url = host + "Notification/autobank/pushnoti";
                 var client = new HttpClient();
-                var type =Properties.Settings.Default.Type;
 				var data = new Dictionary<string, string>
                             {
                                 {"tag_code", Tag},
@@ -792,9 +805,10 @@ namespace LGC.BNP.MIKUNI.Read.Tag
 				string[] tag_code = { "DMIT10081", "DMIT10117", "DMIT10346", "DMIT10409", "DMIT10079" };
 				Random rnd = new Random();
 				int random = rnd.Next(0, 5);
+                int ran12 = rnd.Next(1, 3);
 				var tag_ran = tag_code[random];
 				await Task.Run(() => setText(tag_ran));
-                await Task.Run(() => SendToSocket(tag_ran));
+                await Task.Run(() => SendToSocket(tag_ran, ran12));
             }
             catch (Exception e) {
 				throw e;
