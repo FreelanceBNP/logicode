@@ -43,9 +43,9 @@ namespace LGC.BNP.MIKUNI.Read.Tag
             btn_start.Enabled = true;
             btn_con_signalr.Enabled = false;
 
-			myTimer.Tick += new EventHandler(TimerEventProcessor);
+			//myTimer.Tick += new EventHandler(TimerEventProcessor);
             // Sets the timer interval to 5 seconds.
-            myTimer.Interval = Properties.Settings.Default.intervalTime;
+           //myTimer.Interval = Properties.Settings.Default.intervalTime;
 
         }
 
@@ -136,7 +136,6 @@ namespace LGC.BNP.MIKUNI.Read.Tag
             status_reader.Text = "Connecting..";
             status_reader.BackColor = Color.Thistle;
             status_reader.ForeColor = Color.White;
-			myTimer.Start();
 
 
 
@@ -557,10 +556,10 @@ namespace LGC.BNP.MIKUNI.Read.Tag
                         antenna = (msg.TagReportData[i].AntennaID.AntennaID);
 
 					}
-					var CovertToSting = "";
-					CovertToSting = getTag_id(epc);
-                    await Task.Run(() => setText(CovertToSting));
-                    await Task.Run(() => SendToSocket(CovertToSting, antenna));
+					//var CovertToSting = "";
+					//CovertToSting = getTag_id(epc);
+                    await Task.Run(() => setText(antenna +" | "+epc));
+                    await Task.Run(() => SendToSocket(epc, antenna));
 
 				}
             }

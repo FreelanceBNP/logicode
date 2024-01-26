@@ -48,6 +48,40 @@
 
 		</div>
 	</div>
+	<div class="modal fade" tabindex="-1" id="alert_box">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content br-bottom">
+				<div class="modal-header stripe-1">
+					<h3 class="modal-title"></h3>
+					<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+						 aria-label="Close">
+						<i class="ki-duotone ki-cross fs-1 text-black">
+							<span class="path1"></span><span class="path2"></span>
+						</i>
+					</div>
+				</div>
+
+				<div class="modal-body br-bottom" style="background-color: #ed1b24 !important ;">
+					<div class="row">
+						<div class="col-md-4 text-end">
+							<i class="bi bi-exclamation-triangle-fill me-2 text-white"
+							   style="font-size: 175px;"></i>
+						</div>
+						<div class="col-md-8 text-start">
+							<div>
+								<div class="text-white" style="font-size: 50px;">Warning</div>
+							</div>
+							<div class="text-start">
+								<span class="text-white" id="alert-text" style="font-size: 25px;"></span>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="card-body py-4">
 		<div class="row text-uppercase">
 			<div class="col-3 bg-success" style="height: 100%;">
@@ -123,8 +157,9 @@
 			function testSetAlrm(tag) {
 				connection.invoke("SetAlarm", `Alert ${tag}`).catch(err => console.error(err.toString()));
 			}
-
+			let globalTagdata = [];
 			async function openScanTagCodeModal() {
+		
 				let resConnected = false
 						try {
 
@@ -134,40 +169,67 @@
 							transport: signalR.HttpTransportType.WebSockets
 						})
 						.build();
-
+					
 					connection.on('notification', function (obj) {
 						var _data = JSON.parse(obj);
 			 console.log('notification', _data)
-						if(_data.type =='in')
-						{
-							let stock_in =$('#stock_in').val()
-							let stock =$('#stock').val()
-							stock_in = parseInt(stock_in) + 1
-							stock = parseInt(stock) + 1
 
-							$('#stock_in').val(stock_in)
-							$('#stock').val(stock)
-							$('#show_stock_in').html(stock_in)
-							$('#show_stock').html(stock)
-
-						}
-						else if(_data.type =='out')
+						let tag_code = getParameterByName('tag')
+						if (tag_code != null && tag_code != '' && tag_code != undefined) 
 						{
-							let stock_out =$('#stock_out').val()
-							let stock =$('#stock').val()
-							stock_out = parseInt(stock_out) + 1
-							stock = parseInt(stock) - 1
-							if(stock < 0)
-							{
-								toastr.error("Stock out more than stock");
+							if (_data.tag_code == tag_code) {
+								$('#alert_box').modal('show');
 								return false;
 							}
-							$('#stock_out').val(stock_out)
-							$('#stock').val(stock)
-							$('#show_stock_out').html(stock_out)
-							$('#show_stock').html(stock)
-
 						}
+
+					let pos = 	globalTagdata.findIndex(x => x.tag_code == _data.tag_code && x.type == _data.type)
+						if (pos == -1) {
+							globalTagdata.push(_data);
+
+							// else 
+							// {
+							// 	let oldtype = globalTagdata[pos].type;
+							// 	if( oldtype != _data.type)
+							// 	{
+							// 		let newtype = _data.type == 'in' ? 'out' : 'in';
+							// 		let postype = globalTagdata.findIndex(x => x.tag_code == _data.tag_code && x.type == newtype)
+							// 		if (postype != 1) 
+							// 		{
+							// 			globalTagdata.splice(postype, 1)
+							// 		}
+							// 	}
+							// }
+
+							if (_data.type == 'in') {
+								let stock_in = $('#stock_in').val()
+								let stock = $('#stock').val()
+								stock_in = parseInt(stock_in) + 1
+								stock = parseInt(stock) + 1
+
+								$('#stock_in').val(stock_in)
+								$('#stock').val(stock)
+								$('#show_stock_in').html(stock_in)
+								$('#show_stock').html(stock)
+
+							}
+							else if (_data.type == 'out') {
+								let stock_out = $('#stock_out').val()
+								let stock = $('#stock').val()
+								stock_out = parseInt(stock_out) + 1
+								stock = parseInt(stock) - 1
+								if (stock < 0) {
+									toastr.error("Stock out more than stock");
+									return false;
+								}
+								$('#stock_out').val(stock_out)
+								$('#stock').val(stock)
+								$('#show_stock_out').html(stock_out)
+								$('#show_stock').html(stock)
+
+							}
+						}
+
 							globalTagEvent.push({
 								tag_code: _data.tag_code,
 								type: _data.type,

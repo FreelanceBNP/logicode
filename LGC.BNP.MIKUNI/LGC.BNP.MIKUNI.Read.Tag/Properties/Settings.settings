@@ -6,7 +6,7 @@
       <Value Profile="(Default)">impinj-15-50-20</Value>
     </Setting>
     <Setting Name="Socket" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://localhost:8001/</Value>
+      <Value Profile="(Default)">https://localhost:44372/</Value>
     </Setting>
     <Setting Name="Worktime" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3000</Value>
@@ -21,7 +21,7 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="AtentaPortOut" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2</Value>
+      <Value Profile="(Default)">9</Value>
     </Setting>
   </Settings>
 </SettingsFile>
